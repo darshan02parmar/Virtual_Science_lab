@@ -72,6 +72,7 @@ Students can learn concepts visually and interactively without physical limitati
 
 ## 🚀 Installation & Setup
 
+
 ### Clone the Repository
 ```bash
 git clone https://github.com/your-username/virtual-science-lab.git
@@ -84,3 +85,11 @@ npm run dev
 cd backend
 pip install -r requirements.txt
 uvicorn main:app --reload
+
+
+## 📄 Contributing
+
+If you'd like to contribute to this project, please see:
+
+- [CONTRIBUTING.md](./CONTRIBUTING.md)
+
