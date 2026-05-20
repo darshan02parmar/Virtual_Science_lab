@@ -5,8 +5,8 @@ const ChemistryLayout = () => {
   return (
     <div
       style={{
-        padding: "24px",
-        maxWidth: "1200px",
+        padding: "32px",
+        maxWidth: "1000px",
         margin: "0 auto",
       }}
     >
