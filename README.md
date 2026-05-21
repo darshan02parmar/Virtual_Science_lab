@@ -92,6 +92,8 @@ The **Virtual Science Lab Simulator** bridges this gap by offering a fully digit
 
 # ✨ Key Features
 
+> **Note:** The app experiment pages are available under `/physics`, `/chemistry`, and `/biology`.
+
 ## 🧪 Chemistry Simulations
 
 - Chemical reactions
@@ -167,6 +169,19 @@ F --> G
 ---
 
 # 🛠️ Tech Stack
+
+---
+
+## 🧪 Experiment Preview
+
+Open the labs from the main routes (via the app router):
+
+- **Physics**: `/physics`
+  - Available components: `VelocityAcceleration`, `MagneticFieldWires`, `ThumbRule`, `MagneticFieldDirection`
+- **Chemistry**: `/chemistry`
+  - Available components: `AcidBaseNeutralization`, `ChemistryEquipment`, `Condenser`, `VolcanoExperiment`
+- **Biology**: `/biology`
+  - Available components: `HumanBody`, `Mitochondria`, `Eye`, `Kidney`
 
 ---
 
