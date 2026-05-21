@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import { useGamification } from "../context/GamificationContext";
 
 const BADGE_ICONS = {
@@ -34,7 +34,7 @@ const BadgeNotification = () => {
       <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 max-w-sm w-full pointer-events-none">
         {/* XP Gain Notification */}
         {xpEarned > 0 && (
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
@@ -57,14 +57,14 @@ const BadgeNotification = () => {
             <div className="text-xl font-black bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent px-2">
               +{xpEarned} XP
             </div>
-          </motion.div>
+          </Motion.div>
         )}
 
         {/* Badge Unlocked Notification(s) */}
         {newBadges.map((badgeName, idx) => {
           const config = BADGE_ICONS[badgeName] || { emoji: "🎉", color: "from-blue-500 to-purple-600" };
           return (
-            <motion.div
+            <Motion.div
               key={badgeName}
               initial={{ opacity: 0, y: 50, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -102,7 +102,7 @@ const BadgeNotification = () => {
                   ✕
                 </button>
               </div>
-            </motion.div>
+            </Motion.div>
           );
         })}
       </div>

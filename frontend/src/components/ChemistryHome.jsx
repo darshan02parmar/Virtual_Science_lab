@@ -26,9 +26,11 @@ const ChemistryHome = () => {
       >
         {experiments.map((exp) => (
           <ExperimentCard
-            key={exp.id}
+            key={exp.slug}
+            id={exp.slug}
             title={exp.title}
             description={exp.description}
+            subject="chemistry"
             link={`/chemistry/${exp.slug}`}
           />
         ))}

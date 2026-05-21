@@ -1,0 +1,88 @@
+export const EXPERIMENT_CATALOG = [
+  {
+    id: "human-body",
+    title: "Human Body Anatomy",
+    description: "Explore full human body systems in 3D",
+    subject: "biology",
+    link: "/biology/human-body",
+  },
+  {
+    id: "mitochondria",
+    title: "Mitochondria",
+    description: "Study the powerhouse of the cell",
+    subject: "biology",
+    link: "/biology/mitochondria",
+  },
+  {
+    id: "eye",
+    title: "Eye Anatomy",
+    description: "Understand structure and function of the eye",
+    subject: "biology",
+    link: "/biology/eye",
+  },
+  {
+    id: "kidney",
+    title: "Kidney Anatomy",
+    description: "Learn how kidneys filter blood",
+    subject: "biology",
+    link: "/biology/kidney",
+  },
+  {
+    id: "chemistry-equipment",
+    title: "Chemistry Equipment",
+    description: "Learn about laboratory apparatus",
+    subject: "chemistry",
+    link: "/chemistry/chemistry-equipment",
+  },
+  {
+    id: "volcano-experiment",
+    title: "Volcano Experiment",
+    description: "Visualize a chemical reaction",
+    subject: "chemistry",
+    link: "/chemistry/volcano-experiment",
+  },
+  {
+    id: "condenser",
+    title: "Condenser",
+    description: "Understand distillation apparatus",
+    subject: "chemistry",
+    link: "/chemistry/condenser",
+  },
+  {
+    id: "acid-base-neutralization",
+    title: "Acid Base Neutralization",
+    description: "Observe how acids and bases react to form salt and water",
+    subject: "chemistry",
+    link: "/chemistry/acid-base-neutralization",
+  },
+  {
+    id: "velocity-acceleration",
+    title: "Velocity & Acceleration",
+    description: "Understand motion concepts",
+    subject: "physics",
+    link: "/physics/velocity-acceleration",
+  },
+  {
+    id: "magnetic-field-wires",
+    title: "Magnetic Field (Two Wires)",
+    description: "Interaction of magnetic fields",
+    subject: "physics",
+    link: "/physics/magnetic-field-wires",
+  },
+  {
+    id: "thumb-rule",
+    title: "Right-Hand Thumb Rule",
+    description: "Direction of magnetic field",
+    subject: "physics",
+    link: "/physics/thumb-rule",
+  },
+  {
+    id: "magnetic-field-direction",
+    title: "Magnetic Field Direction",
+    description: "Field around straight conductor",
+    subject: "physics",
+    link: "/physics/magnetic-field-direction",
+  },
+];
+
+export const SUBJECTS = ["biology", "chemistry", "physics"];

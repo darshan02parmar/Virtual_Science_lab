@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import AppRouter from "./router";
 import { ThemeProvider } from "./context/ThemeContext";
 import { GamificationProvider } from "./context/GamificationContext";
+import { ProgressProvider } from "./context/ProgressContext";
 import "./styles/globals.css";
 import "./index.css";
 
@@ -12,7 +13,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <ThemeProvider>
         <GamificationProvider>
-          <AppRouter />
+          <ProgressProvider>
+            <AppRouter />
+          </ProgressProvider>
         </GamificationProvider>
       </ThemeProvider>
     </BrowserRouter>

@@ -7,6 +7,7 @@ import Biology from "./pages/Biology";
 import Chemistry from "./pages/Chemistry";
 import Physics from "./pages/Physics";
 import Profile from "./pages/Profile";
+import ProgressDashboard from "./pages/ProgressDashboard";
 
 const AppRouter = () => {
   return (
@@ -20,6 +21,7 @@ const AppRouter = () => {
         <Route path="/chemistry/*" element={<Chemistry />} />
         <Route path="/physics/*" element={<Physics />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/progress" element={<ProgressDashboard />} />
       </Routes>
     </>
   );

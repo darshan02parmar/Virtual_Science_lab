@@ -6,7 +6,7 @@ import Footer from "../components/Footer";
 
 const Home = () => {
   const [backendStatus, setBackendStatus] = useState("");
-  const { xp, completedQuizzes } = useGamification();
+  const { completedQuizzes } = useGamification();
   const [showChallenge, setShowChallenge] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [isMonday, setIsMonday] = useState(false);

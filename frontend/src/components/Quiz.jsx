@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import { useGamification } from "../context/GamificationContext";
 import quizData from "../data/quizzes.json";
 
@@ -82,7 +82,7 @@ const Quiz = ({ experimentId, subject }) => {
     <div className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-xl transition-all duration-300 dark:border-slate-800 dark:bg-slate-900 max-w-2xl mx-auto">
       <AnimatePresence mode="wait">
         {!quizStarted ? (
-          <motion.div
+          <Motion.div
             key="start"
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -203,9 +203,9 @@ const Quiz = ({ experimentId, subject }) => {
                 </button>
               </>
             )}
-          </motion.div>
+          </Motion.div>
         ) : !quizFinished ? (
-          <motion.div
+          <Motion.div
             key="running"
             initial={{ opacity: 0, x: 25 }}
             animate={{ opacity: 1, x: 0 }}
@@ -264,9 +264,9 @@ const Quiz = ({ experimentId, subject }) => {
                 </button>
               </div>
             )}
-          </motion.div>
+          </Motion.div>
         ) : (
-          <motion.div
+          <Motion.div
             key="finished"
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -326,7 +326,7 @@ const Quiz = ({ experimentId, subject }) => {
                 </div>
               )}
             </div>
-          </motion.div>
+          </Motion.div>
         )}
       </AnimatePresence>
     </div>
