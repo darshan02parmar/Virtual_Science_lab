@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNotes } from "../context/useNotes";
+import { useReports } from "../context/ReportsContext";
+import VirtualLabReportPreview from "./VirtualLabReportPreview";
 
 const DEBOUNCE_MS = 900;
 
@@ -50,6 +52,7 @@ const downloadFile = (filename, content, type) => {
 
 const ExperimentNotesPanel = ({ experimentId }) => {
   const { getNotes, refreshNotesForExperiment, upsertNotes, usingLocalFallback } = useNotes();
+  const { generateReport } = useReports();
 
   const [observations, setObservations] = useState("");
   const [conclusions, setConclusions] = useState("");
@@ -57,6 +60,8 @@ const ExperimentNotesPanel = ({ experimentId }) => {
   const [notes, setNotes] = useState("");
   const [readyToSave, setReadyToSave] = useState(false);
   const [status, setStatus] = useState({ saving: false, savedAt: null });
+  const [reportPreview, setReportPreview] = useState(null);
+  const [generatingReport, setGeneratingReport] = useState(false);
 
   const lastLoadedRef = useRef(null);
   const saveTimerRef = useRef(null);
@@ -164,6 +169,17 @@ const ExperimentNotesPanel = ({ experimentId }) => {
     printWindow.print();
   };
 
+  const handleGenerateReport = async () => {
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    setStatus((s) => ({ ...s, saving: true }));
+    await upsertNotes(experimentId, draftPayload);
+    setStatus((s) => ({ ...s, saving: false, savedAt: new Date().toISOString() }));
+    setGeneratingReport(true);
+    const report = await generateReport(experimentId);
+    setGeneratingReport(false);
+    setReportPreview(report);
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-md p-6">
       <div className="flex items-start justify-between gap-4 mb-4">
@@ -205,6 +221,14 @@ const ExperimentNotesPanel = ({ experimentId }) => {
           className="rounded border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-100"
         >
           Print / Save PDF
+        </button>
+        <button
+          type="button"
+          onClick={handleGenerateReport}
+          disabled={generatingReport}
+          className="rounded bg-emerald-700 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-600 disabled:cursor-wait disabled:opacity-70"
+        >
+          {generatingReport ? "Generating Report..." : "Generate Lab Report"}
         </button>
       </div>
 
@@ -249,6 +273,13 @@ const ExperimentNotesPanel = ({ experimentId }) => {
           />
         </div>
       </div>
+
+      {reportPreview && (
+        <VirtualLabReportPreview
+          report={reportPreview}
+          onClose={() => setReportPreview(null)}
+        />
+      )}
     </div>
   );
 };

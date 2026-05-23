@@ -6,6 +6,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { GamificationProvider } from "./context/GamificationContext";
 import { ProgressProvider } from "./context/ProgressContext";
 import { NotesProvider } from "./context/NotesContext";
+import { ReportsProvider } from "./context/ReportsContext";
 import "./styles/globals.css";
 import "./index.css";
 
@@ -16,7 +17,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <GamificationProvider>
           <ProgressProvider>
             <NotesProvider>
-              <AppRouter />
+              <ReportsProvider>
+                <AppRouter />
+              </ReportsProvider>
             </NotesProvider>
           </ProgressProvider>
         </GamificationProvider>

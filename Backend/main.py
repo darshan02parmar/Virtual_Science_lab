@@ -4,6 +4,7 @@ from app.api.routes import router
 from app.api.gamification import router as gamification_router
 from app.api.progress import router as progress_router
 from app.api.notes import router as notes_router
+from app.api.reports import router as reports_router
 
 
 app = FastAPI(
@@ -24,6 +25,7 @@ app.include_router(router)
 app.include_router(gamification_router)
 app.include_router(progress_router)
 app.include_router(notes_router)
+app.include_router(reports_router)
 
 
 @app.get("/")
