@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useGamification } from "../context/GamificationContext";
+import { useProgress } from "../context/ProgressContext";
+import { EXPERIMENT_CATALOG } from "../data/experiments";
 import Quiz from "../components/Quiz";
 import Footer from "../components/Footer";
 
 const Home = () => {
   const [backendStatus, setBackendStatus] = useState("");
   const { completedQuizzes } = useGamification();
+  const { recommendations } = useProgress();
   const [showChallenge, setShowChallenge] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [isMonday, setIsMonday] = useState(false);
@@ -194,6 +197,28 @@ const Home = () => {
             </div>
           </div>
         </div>
+
+        {recommendations && recommendations.length > 0 && (
+          <div className="mb-12">
+            <h3 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400 mb-6 flex items-center gap-2">
+              Recommended for You
+            </h3>
+            <div className="tracker-recommendations">
+              {recommendations.map((rec) => {
+                const expData = EXPERIMENT_CATALOG.find(e => e.id === rec.experiment_id);
+                return (
+                  <Link to={expData?.link || "/"} key={rec.experiment_id} className="rec-card">
+                    <span className="rec-badge">{rec.reason}</span>
+                    <span className={`rec-difficulty difficulty-${rec.difficulty}`}>{rec.difficulty}</span>
+                    <h3 className="rec-title">{rec.title}</h3>
+                    <p className="rec-desc">{rec.description}</p>
+                    <span className="rec-action">Start Experiment &rarr;</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         <div>
           <h3 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400 mb-6 flex items-center gap-2">

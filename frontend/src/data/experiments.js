@@ -5,6 +5,7 @@ export const EXPERIMENT_CATALOG = [
     description: "Explore full human body systems in 3D",
     subject: "biology",
     link: "/biology/human-body",
+    difficulty: "Beginner",
   },
   {
     id: "mitochondria",
@@ -12,6 +13,7 @@ export const EXPERIMENT_CATALOG = [
     description: "Study the powerhouse of the cell",
     subject: "biology",
     link: "/biology/mitochondria",
+    difficulty: "Intermediate",
   },
   {
     id: "eye",
@@ -19,6 +21,7 @@ export const EXPERIMENT_CATALOG = [
     description: "Understand structure and function of the eye",
     subject: "biology",
     link: "/biology/eye",
+    difficulty: "Intermediate",
   },
   {
     id: "kidney",
@@ -26,6 +29,7 @@ export const EXPERIMENT_CATALOG = [
     description: "Learn how kidneys filter blood",
     subject: "biology",
     link: "/biology/kidney",
+    difficulty: "Advanced",
   },
   {
     id: "chemistry-equipment",
@@ -33,6 +37,7 @@ export const EXPERIMENT_CATALOG = [
     description: "Learn about laboratory apparatus",
     subject: "chemistry",
     link: "/chemistry/chemistry-equipment",
+    difficulty: "Beginner",
   },
   {
     id: "volcano-experiment",
@@ -40,6 +45,7 @@ export const EXPERIMENT_CATALOG = [
     description: "Visualize a chemical reaction",
     subject: "chemistry",
     link: "/chemistry/volcano-experiment",
+    difficulty: "Beginner",
   },
   {
     id: "condenser",
@@ -47,6 +53,7 @@ export const EXPERIMENT_CATALOG = [
     description: "Understand distillation apparatus",
     subject: "chemistry",
     link: "/chemistry/condenser",
+    difficulty: "Intermediate",
   },
   {
     id: "acid-base-neutralization",
@@ -54,6 +61,7 @@ export const EXPERIMENT_CATALOG = [
     description: "Observe how acids and bases react to form salt and water",
     subject: "chemistry",
     link: "/chemistry/acid-base-neutralization",
+    difficulty: "Advanced",
   },
   {
     id: "velocity-acceleration",
@@ -61,6 +69,7 @@ export const EXPERIMENT_CATALOG = [
     description: "Understand motion concepts",
     subject: "physics",
     link: "/physics/velocity-acceleration",
+    difficulty: "Beginner",
   },
   {
     id: "magnetic-field-wires",
@@ -68,6 +77,7 @@ export const EXPERIMENT_CATALOG = [
     description: "Interaction of magnetic fields",
     subject: "physics",
     link: "/physics/magnetic-field-wires",
+    difficulty: "Intermediate",
   },
   {
     id: "thumb-rule",
@@ -75,6 +85,7 @@ export const EXPERIMENT_CATALOG = [
     description: "Direction of magnetic field",
     subject: "physics",
     link: "/physics/thumb-rule",
+    difficulty: "Beginner",
   },
   {
     id: "magnetic-field-direction",
@@ -82,6 +93,7 @@ export const EXPERIMENT_CATALOG = [
     description: "Field around straight conductor",
     subject: "physics",
     link: "/physics/magnetic-field-direction",
+    difficulty: "Advanced",
   },
 ];
 

@@ -32,6 +32,7 @@ const PhysicsHome = () => {
             description={exp.description}
             subject="physics"
             link={`/physics/${exp.slug}`}
+            difficulty={exp.difficulty}
           />
         ))}
       </div>

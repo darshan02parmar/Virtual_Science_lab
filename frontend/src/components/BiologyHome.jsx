@@ -27,6 +27,7 @@ const BiologyHome = () => {
             description={exp.description}
             subject={exp.subject}
             link={exp.link}
+            difficulty={exp.difficulty}
           />
         ))}
       </div>

@@ -21,7 +21,7 @@ const getTypeClass = (subject) => {
   return "";
 };
 
-const ExperimentCard = ({ id, title, description, link, subject }) => {
+const ExperimentCard = ({ id, title, description, link, subject, difficulty }) => {
   const { completedIds, markExperimentComplete } = useProgress();
   const isCompleted = completedIds.has(id);
 
@@ -38,6 +38,11 @@ const ExperimentCard = ({ id, title, description, link, subject }) => {
           <div>
             <div className="card-icon">{getSubjectIcon(subject)}</div>
             <h3>{title}</h3>
+            {difficulty && (
+              <span className={`rec-difficulty difficulty-${difficulty}`} style={{ marginLeft: 0, marginTop: "8px" }}>
+                {difficulty}
+              </span>
+            )}
           </div>
           {isCompleted && <span className="progress-status-pill">Completed</span>}
         </div>

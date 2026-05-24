@@ -57,7 +57,7 @@ const ProgressBar = ({ value, tone = "blue" }) => (
 );
 
 const ProgressDashboard = () => {
-  const { records, completedIds, loading, usingLocalFallback, markExperimentComplete } = useProgress();
+  const { records, recommendations, completedIds, loading, usingLocalFallback, markExperimentComplete } = useProgress();
   const { completedQuizzes, quizAttempts } = useGamification();
   const [weekAgo] = useState(() => Date.now() - 7 * 24 * 60 * 60 * 1000);
   const completedCount = completedIds.size;
@@ -141,6 +141,29 @@ const ProgressDashboard = () => {
           <small>{quizAttempts.length} attempts saved</small>
         </article>
       </section>
+
+      {recommendations && recommendations.length > 0 && (
+        <section className="tracker-panel fade-in" style={{ marginBottom: "24px", borderLeft: "4px solid #8b5cf6" }}>
+          <div className="tracker-panel-heading">
+            <h2>Suggested Experiments</h2>
+            <span>Personalized for you</span>
+          </div>
+          <div className="tracker-recommendations">
+            {recommendations.map((rec) => {
+              const expData = EXPERIMENT_CATALOG.find(e => e.id === rec.experiment_id);
+              return (
+                <Link to={expData?.link || "/"} key={rec.experiment_id} className="rec-card">
+                  <span className="rec-badge">{rec.reason}</span>
+                  <span className={`rec-difficulty difficulty-${rec.difficulty}`}>{rec.difficulty}</span>
+                  <h3 className="rec-title">{rec.title}</h3>
+                  <p className="rec-desc">{rec.description}</p>
+                  <span className="rec-action">Start Experiment &rarr;</span>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       <section className="tracker-panel">
         <div className="tracker-panel-heading">

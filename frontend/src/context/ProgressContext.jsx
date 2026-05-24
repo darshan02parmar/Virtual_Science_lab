@@ -26,6 +26,7 @@ const writeLocalProgress = (records) => {
 
 export const ProgressProvider = ({ children }) => {
   const [records, setRecords] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [usingLocalFallback, setUsingLocalFallback] = useState(false);
 
@@ -38,9 +39,20 @@ export const ProgressProvider = ({ children }) => {
       setRecords(data);
       writeLocalProgress(data);
       setUsingLocalFallback(false);
+      
+      try {
+        const recRes = await fetch(`${BASE_URL}/api/recommendations/${USER_ID}`);
+        if (recRes.ok) {
+          const recData = await recRes.json();
+          setRecommendations(recData);
+        }
+      } catch {
+        setRecommendations([]);
+      }
     } catch {
       setRecords(readLocalProgress());
       setUsingLocalFallback(true);
+      setRecommendations([]);
     } finally {
       setLoading(false);
     }
@@ -98,6 +110,7 @@ export const ProgressProvider = ({ children }) => {
     <ProgressContext.Provider
       value={{
         records,
+        recommendations,
         completedIds,
         loading,
         usingLocalFallback,
