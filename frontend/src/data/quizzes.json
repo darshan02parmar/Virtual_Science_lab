@@ -329,6 +329,58 @@
         "correct": 2
       }
     ],
+    "solar-system": [
+  {
+    "question": "Which object is at the center of our Solar System?",
+    "options": [
+      "Earth",
+      "Sun",
+      "Mars",
+      "Jupiter"
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Which planet is known as the Red Planet?",
+    "options": [
+      "Venus",
+      "Mars",
+      "Saturn",
+      "Mercury"
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Which is the largest planet in our Solar System?",
+    "options": [
+      "Earth",
+      "Mars",
+      "Jupiter",
+      "Neptune"
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Which force keeps planets orbiting around the Sun?",
+    "options": [
+      "Magnetism",
+      "Gravity",
+      "Electricity",
+      "Friction"
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Which planet is closest to the Sun?",
+    "options": [
+      "Earth",
+      "Venus",
+      "Mercury",
+      "Mars"
+    ],
+    "correct": 2
+  }
+],
     "titration-experiment": [
       {
         "question": "What is the primary purpose of an acid-base titration?",

@@ -6,7 +6,7 @@ import VelocityAcceleration from "../experiments/physics/VelocityAcceleration";
 import MagneticFieldWires from "../experiments/physics/MagneticFieldWires";
 import ThumbRule from "../experiments/physics/ThumbRule";
 import MagneticFieldDirection from "../experiments/physics/MagneticFieldDirection";
-
+import SolarSystem from "../experiments/physics/SolarSystem";
 const Physics = () => {
   return (
     <Routes>
@@ -25,7 +25,12 @@ const Physics = () => {
           path="magnetic-field-direction"
           element={<MagneticFieldDirection />}
         />
+        <Route
+        path="solar-system"
+        element={<SolarSystem />}
+        />
       </Route>
+      
     </Routes>
   );
 };

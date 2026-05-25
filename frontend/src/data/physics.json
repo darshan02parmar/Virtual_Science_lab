@@ -81,6 +81,28 @@
         "Observe current direction.",
         "Follow field lines carefully."
       ]
-    }
+    },
+    {
+  "id": "solar-system",
+  "title": "Solar System",
+  "description": "Explore planets and the structure of the solar system in 3D",
+  "modelUrl": "https://sketchfab.com/models/779eee9d756b4cb7be84f0073fc1985f/embed",
+  "aim": "To study the structure and organization of the solar system.",
+  "theory": "The solar system consists of the Sun and celestial bodies orbiting around it including planets, moons, asteroids, and comets. Gravity keeps these bodies moving in stable paths.",
+  "procedure": [
+    "Load the 3D solar system model.",
+    "Rotate and zoom to inspect planets and their movement around the Sun.",
+    "Observe relative positions of planets around the Sun.",
+    "Study planetary arrangement and structure."
+  ],
+  "observation": "Different planets and their arrangement within the solar system are clearly visible.",
+  "result": "The structure and organization of the solar system is understood.",
+  "precautions": [
+    "Observe planetary arrangement carefully.",
+    "Rotate the model for better understanding.",
+    "Zoom in to inspect planets individually."
+  ]
+}
+    
   ]
 }
