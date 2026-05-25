@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import { useGamification } from "../context/GamificationContext";
+import { useOnlineStatus } from "../context/OnlineStatusContext";
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const { xp } = useGamification();
+  const { isOnline, pendingCount, isSyncing } = useOnlineStatus();
 
   return (
     <nav
@@ -93,6 +95,71 @@ const Navbar = () => {
         >
           Physics
         </Link>
+
+        {/* Offline / Online / Syncing Indicator */}
+        {(!isOnline || isSyncing || pendingCount > 0) && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "8px 14px",
+              borderRadius: "20px",
+              fontSize: "12px",
+              fontWeight: "700",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+              backdropFilter: "blur(10px)",
+              transition: "all 0.3s ease",
+              animation: "pulseIndicator 2.5s infinite ease-in-out",
+              background: !isOnline
+                ? "rgba(239, 68, 68, 0.25)"
+                : isSyncing
+                ? "rgba(59, 130, 246, 0.25)"
+                : "rgba(16, 185, 129, 0.25)",
+              border: !isOnline
+                ? "1px solid rgba(239, 68, 68, 0.45)"
+                : isSyncing
+                ? "1px solid rgba(59, 130, 246, 0.45)"
+                : "1px solid rgba(16, 185, 129, 0.45)",
+              color: !isOnline ? "#fca5a5" : isSyncing ? "#93c5fd" : "#6ee7b7",
+            }}
+          >
+            <style>
+              {`
+                @keyframes pulseIndicator {
+                  0% { opacity: 0.85; }
+                  50% { opacity: 1; }
+                  100% { opacity: 0.85; }
+                }
+                @keyframes spinSync {
+                  from { transform: rotate(0deg); }
+                  to { transform: rotate(360deg); }
+                }
+                .spin-sync-icon {
+                  animation: spinSync 1.5s linear infinite;
+                }
+              `}
+            </style>
+            {!isOnline ? (
+              <>
+                <span>🔌</span>
+                <span>Offline {pendingCount > 0 ? `(${pendingCount} pending)` : ""}</span>
+              </>
+            ) : isSyncing ? (
+              <>
+                <svg className="spin-sync-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+                </svg>
+                <span>Syncing...</span>
+              </>
+            ) : (
+              <>
+                <span style={{ display: "inline-block", width: "8px", height: "8px", borderRadius: "50%", background: "#34d399" }} />
+                <span>Synced</span>
+              </>
+            )}
+          </div>
+        )}
 
         <Link
           style={{

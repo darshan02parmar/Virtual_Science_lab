@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import BadgeNotification from "./components/BadgeNotification";
+import SyncManager from "./components/SyncManager";
 
 import Home from "./pages/Home";
 import Biology from "./pages/Biology";
@@ -14,6 +15,7 @@ const AppRouter = () => {
     <>
       <Navbar />
       <BadgeNotification />
+      <SyncManager />
 
       <Routes>
         <Route path="/" element={<Home />} />

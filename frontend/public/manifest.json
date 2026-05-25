@@ -1,0 +1,18 @@
+{
+  "short_name": "Science Lab",
+  "name": "Virtual Science Lab",
+  "description": "Access interactive science simulations, quizzes, progress tracking, and notes fully offline.",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "display": "standalone",
+  "orientation": "any"
+}

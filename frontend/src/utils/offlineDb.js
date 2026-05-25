@@ -1,0 +1,279 @@
+const DB_NAME = "virtual-science-lab-db";
+const DB_VERSION = 1;
+
+let dbInstance = null;
+
+export const initDb = () => {
+  if (dbInstance) return Promise.resolve(dbInstance);
+
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+
+      // 1. Progress store
+      if (!db.objectStoreNames.contains("progress")) {
+        db.createObjectStore("progress", { keyPath: "experiment_id" });
+      }
+
+      // 2. Notes store
+      if (!db.objectStoreNames.contains("notes")) {
+        db.createObjectStore("notes", { keyPath: "experiment_id" });
+      }
+
+      // 3. Quiz Attempts store
+      if (!db.objectStoreNames.contains("quiz_attempts")) {
+        db.createObjectStore("quiz_attempts", { keyPath: "id" });
+      }
+
+      // 4. Gamification Status store
+      if (!db.objectStoreNames.contains("gamification_status")) {
+        db.createObjectStore("gamification_status", { keyPath: "user_id" });
+      }
+
+      // 5. Recommendations store
+      if (!db.objectStoreNames.contains("recommendations")) {
+        db.createObjectStore("recommendations", { keyPath: "user_id" });
+      }
+
+      // 6. Outbox Sync Queue store
+      if (!db.objectStoreNames.contains("sync_queue")) {
+        db.createObjectStore("sync_queue", { keyPath: "id" });
+      }
+    };
+
+    request.onsuccess = (event) => {
+      dbInstance = event.target.result;
+      resolve(dbInstance);
+    };
+
+    request.onerror = (event) => {
+      reject(event.target.error);
+    };
+  });
+};
+
+// Helper to get transaction and object store asynchronously
+const getStore = async (storeName, mode = "readonly") => {
+  const db = await initDb();
+  return db.transaction(storeName, mode).objectStore(storeName);
+};
+
+export const offlineDb = {
+  // --- PROGRESS ---
+  async getProgress() {
+    const store = await getStore("progress", "readonly");
+    return new Promise((resolve) => {
+      const req = store.getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => resolve([]);
+    });
+  },
+
+  async saveProgressRecord(record) {
+    const store = await getStore("progress", "readwrite");
+    return new Promise((resolve) => {
+      const req = store.put(record);
+      req.onsuccess = () => resolve(true);
+      req.onerror = () => resolve(false);
+    });
+  },
+
+  async saveAllProgress(records) {
+    const db = await initDb();
+    const tx = db.transaction("progress", "readwrite");
+    const store = tx.objectStore("progress");
+    store.clear();
+    for (const record of records) {
+      store.put(record);
+    }
+    return new Promise((resolve) => {
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => resolve(false);
+    });
+  },
+
+  // --- NOTES ---
+  async getNotes() {
+    const store = await getStore("notes", "readonly");
+    return new Promise((resolve) => {
+      const req = store.getAll();
+      req.onsuccess = () => {
+        const notesMap = {};
+        for (const note of req.result) {
+          notesMap[note.experiment_id] = note;
+        }
+        resolve(notesMap);
+      };
+      req.onerror = () => resolve({});
+    });
+  },
+
+  async getNote(experimentId) {
+    const store = await getStore("notes", "readonly");
+    return new Promise((resolve) => {
+      const req = store.get(experimentId);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    });
+  },
+
+  async saveNote(note) {
+    const store = await getStore("notes", "readwrite");
+    return new Promise((resolve) => {
+      const req = store.put(note);
+      req.onsuccess = () => resolve(true);
+      req.onerror = () => resolve(false);
+    });
+  },
+
+  async saveAllNotes(notesMap) {
+    const db = await initDb();
+    const tx = db.transaction("notes", "readwrite");
+    const store = tx.objectStore("notes");
+    store.clear();
+    for (const id in notesMap) {
+      store.put(notesMap[id]);
+    }
+    return new Promise((resolve) => {
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => resolve(false);
+    });
+  },
+
+  // --- QUIZ ATTEMPTS ---
+  async getQuizAttempts() {
+    const store = await getStore("quiz_attempts", "readonly");
+    return new Promise((resolve) => {
+      const req = store.getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => resolve([]);
+    });
+  },
+
+  async saveQuizAttempt(attempt) {
+    const store = await getStore("quiz_attempts", "readwrite");
+    return new Promise((resolve) => {
+      const req = store.put(attempt);
+      req.onsuccess = () => resolve(true);
+      req.onerror = () => resolve(false);
+    });
+  },
+
+  async saveAllQuizAttempts(attempts) {
+    const db = await initDb();
+    const tx = db.transaction("quiz_attempts", "readwrite");
+    const store = tx.objectStore("quiz_attempts");
+    store.clear();
+    for (const att of attempts) {
+      store.put(att);
+    }
+    return new Promise((resolve) => {
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => resolve(false);
+    });
+  },
+
+  // --- GAMIFICATION STATUS ---
+  async getGamificationStatus(userId = "default-student") {
+    const store = await getStore("gamification_status", "readonly");
+    return new Promise((resolve) => {
+      const req = store.get(userId);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    });
+  },
+
+  async saveGamificationStatus(status) {
+    const store = await getStore("gamification_status", "readwrite");
+    return new Promise((resolve) => {
+      const req = store.put(status);
+      req.onsuccess = () => resolve(true);
+      req.onerror = () => resolve(false);
+    });
+  },
+
+  // --- RECOMMENDATIONS ---
+  async getRecommendations(userId = "default-student") {
+    const store = await getStore("recommendations", "readonly");
+    return new Promise((resolve) => {
+      const req = store.get(userId);
+      req.onsuccess = () => resolve(req.result?.recommendations || []);
+      req.onerror = () => resolve([]);
+    });
+  },
+
+  async saveRecommendations(userId = "default-student", recommendations) {
+    const store = await getStore("recommendations", "readwrite");
+    return new Promise((resolve) => {
+      const req = store.put({ user_id: userId, recommendations });
+      req.onsuccess = () => resolve(true);
+      req.onerror = () => resolve(false);
+    });
+  },
+
+  // --- SYNC OUTBOX QUEUE ---
+  async getSyncQueue() {
+    const store = await getStore("sync_queue", "readonly");
+    return new Promise((resolve) => {
+      const req = store.getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => resolve([]);
+    });
+  },
+
+  async queueAction(type, payload) {
+    const store = await getStore("sync_queue", "readwrite");
+    const action = {
+      id: `${type}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      type,
+      payload,
+      timestamp: new Date().toISOString()
+    };
+    
+    // Notes updates de-duplication to prevent syncing multiple versions of the same unsynced note
+    if (type === "notes") {
+      const all = await this.getSyncQueue();
+      const existingNoteAction = all.find(
+        (a) => a.type === "notes" && a.payload.experiment_id === payload.experiment_id
+      );
+      if (existingNoteAction) {
+        existingNoteAction.payload = {
+          ...existingNoteAction.payload,
+          ...payload
+        };
+        existingNoteAction.timestamp = action.timestamp;
+        return new Promise((resolve) => {
+          const req = store.put(existingNoteAction);
+          req.onsuccess = () => resolve(existingNoteAction.id);
+          req.onerror = () => resolve(null);
+        });
+      }
+    }
+
+    return new Promise((resolve) => {
+      const req = store.put(action);
+      req.onsuccess = () => resolve(action.id);
+      req.onerror = () => resolve(null);
+    });
+  },
+
+  async dequeueAction(id) {
+    const store = await getStore("sync_queue", "readwrite");
+    return new Promise((resolve) => {
+      const req = store.delete(id);
+      req.onsuccess = () => resolve(true);
+      req.onerror = () => resolve(false);
+    });
+  },
+
+  async clearSyncQueue() {
+    const store = await getStore("sync_queue", "readwrite");
+    return new Promise((resolve) => {
+      const req = store.clear();
+      req.onsuccess = () => resolve(true);
+      req.onerror = () => resolve(false);
+    });
+  }
+};

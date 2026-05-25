@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import API_URL from "../config";
+import { offlineDb } from "../utils/offlineDb";
 
 const ProgressContext = createContext();
 const USER_ID = "default-student";
@@ -33,11 +34,15 @@ export const ProgressProvider = ({ children }) => {
   const refreshProgress = async () => {
     setLoading(true);
     try {
+      if (typeof navigator !== "undefined" && !navigator.onLine) {
+        throw new Error("Offline mode: skipping API fetch for progress");
+      }
       const res = await fetch(`${BASE_URL}/api/progress/${USER_ID}`);
       if (!res.ok) throw new Error("Progress API unavailable");
       const data = await res.json();
       setRecords(data);
       writeLocalProgress(data);
+      offlineDb.saveAllProgress(data);
       setUsingLocalFallback(false);
       
       try {
@@ -45,14 +50,24 @@ export const ProgressProvider = ({ children }) => {
         if (recRes.ok) {
           const recData = await recRes.json();
           setRecommendations(recData);
+          offlineDb.saveRecommendations(USER_ID, recData);
         }
       } catch {
-        setRecommendations([]);
+        // Fallback for recommendation fetch if it fails independently
+        const cachedRecs = await offlineDb.getRecommendations(USER_ID);
+        setRecommendations(cachedRecs || []);
       }
-    } catch {
-      setRecords(readLocalProgress());
+    } catch (err) {
+      console.log("Loading offline progress & recommendations:", err.message);
       setUsingLocalFallback(true);
-      setRecommendations([]);
+      const cachedProgress = await offlineDb.getProgress();
+      if (cachedProgress && cachedProgress.length > 0) {
+        setRecords(cachedProgress);
+      } else {
+        setRecords(readLocalProgress());
+      }
+      const cachedRecs = await offlineDb.getRecommendations(USER_ID);
+      setRecommendations(cachedRecs || []);
     } finally {
       setLoading(false);
     }
@@ -73,14 +88,23 @@ export const ProgressProvider = ({ children }) => {
       score: experiment.score ?? null,
     };
 
+    // Instantly update local state and IndexedDB progress cache
     const nextRecords = [
       record,
       ...records.filter((item) => item.experiment_id !== experiment.id),
     ];
     setRecords(nextRecords);
     writeLocalProgress(nextRecords);
+    await offlineDb.saveProgressRecord(record);
+
+    // Queue action for background sync
+    const actionId = await offlineDb.queueAction("progress", record);
 
     try {
+      if (typeof navigator !== "undefined" && !navigator.onLine) {
+        throw new Error("Offline mode: queued progress for synchronization");
+      }
+
       const res = await fetch(`${BASE_URL}/api/progress/complete`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -88,10 +112,18 @@ export const ProgressProvider = ({ children }) => {
       });
       if (!res.ok) throw new Error("Progress API unavailable");
       const data = await res.json();
+      
+      // Dequeue if successfully sent directly
+      if (actionId) {
+        await offlineDb.dequeueAction(actionId);
+      }
+
       setRecords(data);
       writeLocalProgress(data);
+      offlineDb.saveAllProgress(data);
       setUsingLocalFallback(false);
-    } catch {
+    } catch (err) {
+      console.log("Offline or progress server error. Progress saved to IndexedDB queue:", err.message);
       setUsingLocalFallback(true);
     }
   };
@@ -123,4 +155,19 @@ export const ProgressProvider = ({ children }) => {
   );
 };
 
-export const useProgress = () => useContext(ProgressContext);
+export const useProgress = () => {
+  const context = useContext(ProgressContext);
+  if (context === undefined) {
+    console.warn("useProgress was called outside a ProgressProvider. Returning safe offline fallback.");
+    return {
+      records: [],
+      recommendations: [],
+      completedIds: new Set(),
+      loading: false,
+      usingLocalFallback: true,
+      markExperimentComplete: async () => {},
+      refreshProgress: async () => {}
+    };
+  }
+  return context;
+};
