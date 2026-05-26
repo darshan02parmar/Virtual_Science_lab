@@ -4,17 +4,11 @@ import BackButton from "../components/BackButton";
 import { useGamification } from "../context/GamificationContext";
 import { useProgress } from "../context/ProgressContext";
 import { EXPERIMENT_CATALOG, SUBJECTS } from "../data/experiments";
+import LearningJourney from "../components/LearningJourney";
 
 const formatSubject = (subject) => subject.charAt(0).toUpperCase() + subject.slice(1);
 
-const formatDate = (date) => {
-  if (!date) return "Recently";
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(date));
-};
+
 
 const getBadgeList = (completedIds) => {
   const completedCount = completedIds.size;
@@ -60,6 +54,7 @@ const ProgressDashboard = () => {
   const { records, recommendations, completedIds, loading, usingLocalFallback, markExperimentComplete } = useProgress();
   const { completedQuizzes, quizAttempts } = useGamification();
   const [weekAgo] = useState(() => Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const [activeTab, setActiveTab] = useState("overview");
   const completedCount = completedIds.size;
   const totalCount = EXPERIMENT_CATALOG.length;
   const overallPercent = Math.round((completedCount / totalCount) * 100);
@@ -98,13 +93,12 @@ const ProgressDashboard = () => {
     <main className="progress-dashboard fade-in">
       <BackButton label="Back to Lab" />
 
-      <section className="tracker-hero">
+      <section className="tracker-hero mb-8">
         <div>
           <p className="tracker-kicker">Student progress tracker</p>
           <h1>Experiment Dashboard</h1>
           <p>
-            Track completed labs, revisit your learning history, and see which subject needs
-            your next experiment.
+            Track completed labs, revisit your learning history, and visualize your scientific journey.
           </p>
         </div>
         <div className="tracker-score">
@@ -112,6 +106,33 @@ const ProgressDashboard = () => {
           <small>{completedCount} of {totalCount} complete</small>
         </div>
       </section>
+
+      {/* Tab Navigation */}
+      <div className="flex gap-4 border-b border-slate-200 dark:border-slate-800 mb-8 pb-4">
+        <button
+          onClick={() => setActiveTab("overview")}
+          className={`text-md font-bold px-5 py-2.5 rounded-xl transition-all ${
+            activeTab === "overview" 
+              ? "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white" 
+              : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-300"
+          }`}
+        >
+          Statistical Overview
+        </button>
+        <button
+          onClick={() => setActiveTab("journey")}
+          className={`text-md font-bold px-5 py-2.5 rounded-xl transition-all ${
+            activeTab === "journey" 
+              ? "bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400" 
+              : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-300"
+          }`}
+        >
+          Learning Journey
+        </button>
+      </div>
+
+      {activeTab === "overview" ? (
+        <>
 
       {usingLocalFallback && (
         <div className="tracker-notice">
@@ -240,40 +261,10 @@ const ProgressDashboard = () => {
           </div>
         </div>
       </section>
-
-      <section className="tracker-panel">
-        <div className="tracker-panel-heading">
-          <h2>Experiment History</h2>
-          <span>{completedRecords.length} records</span>
-        </div>
-        <div className="tracker-history">
-          {completedRecords.length === 0 ? (
-            <p className="tracker-empty">Mark an experiment complete to begin your learning journey.</p>
-          ) : (
-            completedRecords.map((record) => {
-              const experiment = EXPERIMENT_CATALOG.find((item) => item.id === record.experiment_id);
-              return (
-                <Link
-                  className="tracker-history-item"
-                  key={record.experiment_id}
-                  to={experiment?.link || "/"}
-                >
-                  <div>
-                    <strong>{record.title}</strong>
-                    <span>
-                      {formatSubject(record.subject)} - Completed {formatDate(record.completion_date)}
-                      {latestAttemptsByExperiment.has(record.experiment_id)
-                        ? ` - Latest quiz ${latestAttemptsByExperiment.get(record.experiment_id).score}/${latestAttemptsByExperiment.get(record.experiment_id).total_questions}`
-                        : " - Quiz pending"}
-                    </span>
-                  </div>
-                  <small>Revisit</small>
-                </Link>
-              );
-            })
-          )}
-        </div>
-      </section>
+        </>
+      ) : (
+        <LearningJourney />
+      )}
     </main>
   );
 };
