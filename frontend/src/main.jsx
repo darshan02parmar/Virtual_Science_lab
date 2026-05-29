@@ -8,7 +8,6 @@ import { OnlineStatusProvider } from "./context/OnlineStatusContext";
 import { GamificationProvider } from "./context/GamificationContext";
 import { ProgressProvider } from "./context/ProgressContext";
 import { NotesProvider } from "./context/NotesContext";
-import { ReportsProvider } from "./context/ReportsContext";
 import "./styles/globals.css";
 import "./index.css";
 import enableSparkleCursor from "./components/SparkleCursor";

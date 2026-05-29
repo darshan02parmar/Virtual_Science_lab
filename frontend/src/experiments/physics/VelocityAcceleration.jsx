@@ -4,13 +4,6 @@ import BackButton from "../../components/BackButton";
 import ExperimentChatbot from "../../components/ExperimentChatbot";
 
 const VelocityAcceleration = () => {
-  const experiment = physicsData.experiments.find((exp) => exp.id === "velocity-acceleration");
-import Quiz from "../../components/Quiz";
-import ExperimentNotesPanel from "../../components/ExperimentNotesPanel";
-
-import SimulationViewer from "../../components/SimulationViewer";
-
-const VelocityAcceleration = () => {
 
   const experiment = physicsData.experiments.find(
     (exp) => exp.id === "velocity-acceleration"

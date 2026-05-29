@@ -4,13 +4,6 @@ import BackButton from "../../components/BackButton";
 import ExperimentChatbot from "../../components/ExperimentChatbot";
 
 const ThumbRule = () => {
-  const experiment = physicsData.experiments.find((exp) => exp.id === "thumb-rule");
-import Quiz from "../../components/Quiz";
-import ExperimentNotesPanel from "../../components/ExperimentNotesPanel";
-
-import SimulationViewer from "../../components/SimulationViewer";
-
-const ThumbRule = () => {
 
   const experiment = physicsData.experiments.find(
     (exp) => exp.id === "thumb-rule"

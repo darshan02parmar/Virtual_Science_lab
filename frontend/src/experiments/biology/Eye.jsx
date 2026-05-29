@@ -4,13 +4,6 @@ import BackButton from "../../components/BackButton";
 import ExperimentChatbot from "../../components/ExperimentChatbot";
 
 const Eye = () => {
-  const experiment = biologyData.experiments.find((exp) => exp.id === "eye");
-import Quiz from "../../components/Quiz";
-import ExperimentNotesPanel from "../../components/ExperimentNotesPanel";
-
-import SimulationViewer from "../../components/SimulationViewer";
-
-const Eye = () => {
 
   // Find eye experiment from JSON
   const experiment = biologyData.experiments.find(

@@ -117,7 +117,6 @@ const Profile = () => {
     const currentInRange = xp - rank.prevXp;
     progressPercent = Math.min(Math.max((currentInRange / range) * 100, 0), 100);
   }
-  
   // Group experiments by subject
   const subjectsMap = {
     Biology: ["human-body", "mitochondria", "eye", "kidney"],

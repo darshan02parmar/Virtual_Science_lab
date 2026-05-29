@@ -4,13 +4,6 @@ import BackButton from "../../components/BackButton";
 import ExperimentChatbot from "../../components/ExperimentChatbot";
 
 const VolcanoExperiment = () => {
-  const experiment = chemistryData.experiments.find((exp) => exp.id === "volcano-experiment");
-import Quiz from "../../components/Quiz";
-import ExperimentNotesPanel from "../../components/ExperimentNotesPanel";
-
-import SimulationViewer from "../../components/SimulationViewer";
-
-const VolcanoExperiment = () => {
 
   const experiment = chemistryData.experiments.find(
     (exp) => exp.id === "volcano-experiment"

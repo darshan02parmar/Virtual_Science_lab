@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import API_URL from "../config";
+import { useOnlineStatus } from "./OnlineStatusContext";
 import { offlineDb } from "../utils/offlineDb";
 
 const GamificationContext = createContext();
@@ -51,10 +52,12 @@ export const GamificationProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [achievement, setAchievement] = useState(null);
 
+  const { isOnline } = useOnlineStatus();
+
   const fetchStatus = useCallback(async () => {
     try {
       setLoading(true);
-      if (typeof navigator !== "undefined" && !navigator.onLine) {
+      if (!isOnline) {
         throw new Error("Offline mode: skipping gamification fetch");
       }
 
@@ -65,7 +68,6 @@ export const GamificationProvider = ({ children }) => {
         setCompletedQuizzes(data.completed_quizzes);
         setQuizAttempts(data.quiz_attempts || []);
         setUnlockedBadges(data.unlocked_badges);
-        
         cacheStats(data);
         offlineDb.saveGamificationStatus({
           user_id: USER_ID,
@@ -97,7 +99,7 @@ export const GamificationProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [isOnline]);
 
   useEffect(() => {
     fetchStatus();
@@ -214,10 +216,9 @@ export const GamificationProvider = ({ children }) => {
     const actionId = await offlineDb.queueAction("quiz", syncPayload);
 
     try {
-      if (typeof navigator !== "undefined" && !navigator.onLine) {
+      if (!isOnline) {
         throw new Error("Offline");
       }
-
       const res = await fetch(`${BASE_URL}/api/gamification/complete-quiz`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

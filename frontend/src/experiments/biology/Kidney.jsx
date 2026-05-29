@@ -4,13 +4,6 @@ import BackButton from "../../components/BackButton";
 import ExperimentChatbot from "../../components/ExperimentChatbot";
 
 const Kidney = () => {
-  const experiment = biologyData.experiments.find((exp) => exp.id === "kidney");
-import Quiz from "../../components/Quiz";
-import ExperimentNotesPanel from "../../components/ExperimentNotesPanel";
-
-import SimulationViewer from "../../components/SimulationViewer";
-
-const Kidney = () => {
 
   const experiment = biologyData.experiments.find(
     (exp) => exp.id === "kidney"
