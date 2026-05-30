@@ -1,12 +1,3 @@
-import API_URL from "../config";
-import { offlineDb } from "../utils/offlineDb";
-
-const BASE_URL =
-  typeof window !== "undefined" &&
-  (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
-    ? "http://127.0.0.1:8000"
-    : API_URL;
-
 import { useMemo, useState } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import { useGamification } from "../context/GamificationContext";
