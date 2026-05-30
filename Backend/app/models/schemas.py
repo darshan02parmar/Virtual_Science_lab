@@ -120,3 +120,4 @@ class PredictionResponse(BaseModel):
     readiness_level: str
     reasons: List[str]
     recommendations: List[str]
+    tags: List[str] = []

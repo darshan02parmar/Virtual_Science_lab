@@ -56,6 +56,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                       </ReportsProvider>
                     </CollaborationProvider>
                   </PredictionProvider>
+                  <ReportsProvider>    
+                     <Root />
+                  </ReportsProvider>
                 </NotebookProvider>
               </NotesProvider>
             </ProgressProvider>
