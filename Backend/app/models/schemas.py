@@ -69,3 +69,45 @@ class ExperimentHistoryRecord(BaseModel):
     subject: str
     score: int
     timestamp: str  # ISO Format
+
+from typing import List
+
+class NotebookEntryUpsertRequest(BaseModel):
+    user_id: str
+    experiment_id: str
+    subject: str
+    title: str
+    objective: Optional[str] = None
+    procedure_summary: Optional[str] = None
+    observations: Optional[str] = None
+    results: Optional[str] = None
+    conclusions: Optional[str] = None
+    reflection: Optional[str] = None
+    tags: Optional[List[str]] = None
+
+class NotebookEntryResponse(BaseModel):
+    user_id: str
+    experiment_id: str
+    subject: str
+    title: str
+    objective: Optional[str] = None
+    procedure_summary: Optional[str] = None
+    observations: Optional[str] = None
+    results: Optional[str] = None
+    conclusions: Optional[str] = None
+    reflection: Optional[str] = None
+    tags: List[str] = []
+    version: int
+    created_at: str
+    updated_at: str
+
+class NotebookVersionResponse(BaseModel):
+    version: int
+    updated_at: str
+    objective: Optional[str] = None
+    procedure_summary: Optional[str] = None
+    observations: Optional[str] = None
+    results: Optional[str] = None
+    conclusions: Optional[str] = None
+    reflection: Optional[str] = None
+    tags: List[str] = []
