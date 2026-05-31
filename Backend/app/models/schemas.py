@@ -121,3 +121,4 @@ class PredictionResponse(BaseModel):
     reasons: List[str]
     recommendations: List[str]
     tags: List[str] = []
+    recommendations: List[str]

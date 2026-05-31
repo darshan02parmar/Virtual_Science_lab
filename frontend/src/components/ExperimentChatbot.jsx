@@ -1,24 +1,10 @@
-/**
- * ExperimentChatbot.jsx
- * ---------------------
- * A floating, collapsible AI chatbot that gives students experiment-specific
- * guidance.  Drop this into any experiment page:
- *
- *   import ExperimentChatbot from "../../components/ExperimentChatbot";
- *   ...
- *   <ExperimentChatbot experiment={experiment} subject="chemistry" />
- *
- * Props:
- *   experiment  – object from biology/chemistry/physics.json
- *   subject     – "biology" | "chemistry" | "physics"  (optional, for context)
- */
-
 import { useState, useRef, useEffect, useCallback } from "react";
 
 // ---------------------------------------------------------------------------
 // Config
 // ---------------------------------------------------------------------------
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+import API_URL from "../config";
+const API_BASE = API_URL;
 const MAX_HISTORY = 40; // keep last 40 messages in state
 
 // ---------------------------------------------------------------------------
