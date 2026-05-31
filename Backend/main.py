@@ -10,6 +10,7 @@ from app.api.recommendations import router as recommendations_router
 from app.api.sync import router as sync_router
 from app.api.careers import router as careers_router
 from app.api.notebook import router as notebook_router
+from app.api.predictions import router as predictions_router
 
 app = FastAPI(
     title="Virtual Science Lab Backend",
@@ -39,6 +40,7 @@ app.include_router(recommendations_router)
 app.include_router(sync_router)
 app.include_router(careers_router)
 app.include_router(notebook_router)
+app.include_router(predictions_router)
 
 @app.get("/")
 def root():

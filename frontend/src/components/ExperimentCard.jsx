@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { useProgress } from "../context/ProgressContext";
+import { usePredictions } from "../context/PredictionContext";
+import SuccessProbabilityBadge from "./SuccessProbabilityBadge";
+import DifficultyPredictionModal from "./DifficultyPredictionModal";
 
 const getSubjectIcon = (subject) => {
   const normalizedSubject = subject?.trim().toLowerCase();
@@ -18,12 +22,22 @@ const ExperimentCard = ({
   isRecommendation = false, recommendationReason, colorTheme 
 }) => {
   const { completedIds, markExperimentComplete } = useProgress();
+  const { getPrediction } = usePredictions();
+  const [showPrediction, setShowPrediction] = useState(false);
+
   const isCompleted = completedIds.has(id);
+  const prediction = getPrediction(id);
 
   const handleComplete = (event) => {
     event.preventDefault();
     event.stopPropagation();
     markExperimentComplete({ id, title, subject });
+  };
+
+  const handlePredictionClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setShowPrediction(true);
   };
 
   // Fallback themes if colorTheme isn't provided
@@ -66,12 +80,20 @@ const ExperimentCard = ({
               )}
             </div>
           </div>
-          {isCompleted && (
-            <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-full text-xs font-black shadow-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              Done
-            </div>
-          )}
+          <div className="flex flex-col items-end gap-2">
+            {isCompleted && (
+              <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-full text-xs font-black shadow-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                Done
+              </div>
+            )}
+            {prediction && !isCompleted && (
+              <SuccessProbabilityBadge 
+                probability={prediction.success_probability} 
+                onClick={handlePredictionClick} 
+              />
+            )}
+          </div>
         </div>
 
         <h3 className="text-xl font-black text-slate-800 dark:text-white mb-2 line-clamp-1 relative z-10">
@@ -101,6 +123,17 @@ const ExperimentCard = ({
           </span>
         </div>
       </motion.div>
+
+      {showPrediction && (
+        <DifficultyPredictionModal 
+          prediction={prediction} 
+          experimentTitle={title}
+          onClose={(e) => {
+            if(e) { e.preventDefault(); e.stopPropagation(); }
+            setShowPrediction(false);
+          }} 
+        />
+      )}
     </Link>
   );
 };

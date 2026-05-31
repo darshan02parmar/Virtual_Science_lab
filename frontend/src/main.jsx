@@ -9,6 +9,7 @@ import { GamificationProvider } from "./context/GamificationContext";
 import { ProgressProvider } from "./context/ProgressContext";
 import { NotesProvider } from "./context/NotesContext";
 import { NotebookProvider } from "./context/NotebookContext";
+import { PredictionProvider } from "./context/PredictionContext";
 import "./styles/globals.css";
 import "./index.css";
 import enableSparkleCursor from "./components/SparkleCursor";
@@ -47,9 +48,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <ProgressProvider>
               <NotesProvider>
                 <NotebookProvider>
-                  <ReportsProvider>    
-                     <Root />
-                  </ReportsProvider>
+                  <PredictionProvider>
+                    <ReportsProvider>    
+                       <Root />
+                    </ReportsProvider>
+                  </PredictionProvider>
                 </NotebookProvider>
               </NotesProvider>
             </ProgressProvider>

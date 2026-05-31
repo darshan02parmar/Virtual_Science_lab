@@ -111,3 +111,12 @@ class NotebookVersionResponse(BaseModel):
     conclusions: Optional[str] = None
     reflection: Optional[str] = None
     tags: List[str] = []
+
+class PredictionResponse(BaseModel):
+    experiment_id: str
+    expected_difficulty: int
+    estimated_time_minutes: int
+    success_probability: int
+    readiness_level: str
+    reasons: List[str]
+    recommendations: List[str]
