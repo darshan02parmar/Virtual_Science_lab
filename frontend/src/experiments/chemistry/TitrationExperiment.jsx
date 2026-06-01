@@ -38,6 +38,7 @@ const TitrationExperiment = () => {
 
       <Quiz experimentId="titration-experiment" subject="chemistry" />
       <div style={{ marginTop: "24px" }}>
+        <DataVisualizerPanel experimentId="titration-experiment" />
         <ExperimentNotesPanel experimentId="titration-experiment" />
       </div>
     </div>
@@ -45,3 +46,4 @@ const TitrationExperiment = () => {
 };
 
 export default TitrationExperiment;
+

@@ -2,6 +2,7 @@ import physicsData from "../../data/physics.json";
 import InstructionPanel from "../../components/InstructionPanel";
 import BackButton from "../../components/BackButton";
 import LabAssistantPanel from "../../components/LabAssistantPanel";
+import DataVisualizerPanel from "../../components/DataVisualizerPanel";
 
 const VelocityAcceleration = () => {
 
@@ -54,6 +55,7 @@ const VelocityAcceleration = () => {
       <LabAssistantPanel experiment={experiment} subject="physics" />
       <Quiz experimentId="velocity-acceleration" subject="physics" />
       <div style={{ marginTop: "24px" }}>
+        <DataVisualizerPanel experimentId="velocity-acceleration" />
         <ExperimentNotesPanel experimentId="velocity-acceleration" />
       </div>
     </div>
@@ -61,3 +63,4 @@ const VelocityAcceleration = () => {
 };
 
 export default VelocityAcceleration;
+

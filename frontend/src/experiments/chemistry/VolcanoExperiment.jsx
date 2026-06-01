@@ -2,6 +2,7 @@ import chemistryData from "../../data/chemistry.json";
 import InstructionPanel from "../../components/InstructionPanel";
 import BackButton from "../../components/BackButton";
 import LabAssistantPanel from "../../components/LabAssistantPanel";
+import DataVisualizerPanel from "../../components/DataVisualizerPanel";
 
 const VolcanoExperiment = () => {
 
@@ -54,6 +55,7 @@ const VolcanoExperiment = () => {
       <LabAssistantPanel experiment={experiment} subject="chemistry" />
       <Quiz experimentId="volcano-experiment" subject="chemistry" />
       <div style={{ marginTop: "24px" }}>
+        <DataVisualizerPanel experimentId="volcano-experiment" />
         <ExperimentNotesPanel experimentId="volcano-experiment" />
       </div>
     </div>
@@ -61,3 +63,4 @@ const VolcanoExperiment = () => {
 };
 
 export default VolcanoExperiment;
+

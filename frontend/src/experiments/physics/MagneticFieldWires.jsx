@@ -2,6 +2,7 @@ import physicsData from "../../data/physics.json";
 import InstructionPanel from "../../components/InstructionPanel";
 import BackButton from "../../components/BackButton";
 import LabAssistantPanel from "../../components/LabAssistantPanel";
+import DataVisualizerPanel from "../../components/DataVisualizerPanel";
 
 const MagneticFieldWires = () => {
 
@@ -54,6 +55,7 @@ const MagneticFieldWires = () => {
       <LabAssistantPanel experiment={experiment} subject="physics" />
       <Quiz experimentId="magnetic-field-wires" subject="physics" />
       <div style={{ marginTop: "24px" }}>
+        <DataVisualizerPanel experimentId="magnetic-field-wires" />
         <ExperimentNotesPanel experimentId="magnetic-field-wires" />
       </div>
     </div>
@@ -61,3 +63,4 @@ const MagneticFieldWires = () => {
 };
 
 export default MagneticFieldWires;
+

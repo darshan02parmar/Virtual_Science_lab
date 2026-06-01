@@ -2,6 +2,7 @@ import physicsData from "../../data/physics.json";
 import InstructionPanel from "../../components/InstructionPanel";
 import BackButton from "../../components/BackButton";
 import LabAssistantPanel from "../../components/LabAssistantPanel";
+import DataVisualizerPanel from "../../components/DataVisualizerPanel";
 
 const MagneticFieldDirection = () => {
 
@@ -54,6 +55,7 @@ const MagneticFieldDirection = () => {
       <LabAssistantPanel experiment={experiment} subject="physics" />
       <Quiz experimentId="magnetic-field-direction" subject="physics" />
       <div style={{ marginTop: "24px" }}>
+        <DataVisualizerPanel experimentId="magnetic-field-direction" />
         <ExperimentNotesPanel experimentId="magnetic-field-direction" />
       </div>
     </div>
@@ -61,3 +63,4 @@ const MagneticFieldDirection = () => {
 };
 
 export default MagneticFieldDirection;
+

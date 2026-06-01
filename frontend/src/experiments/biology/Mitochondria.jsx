@@ -2,6 +2,7 @@ import biologyData from "../../data/biology.json";
 import InstructionPanel from "../../components/InstructionPanel";
 import BackButton from "../../components/BackButton";
 import LabAssistantPanel from "../../components/LabAssistantPanel";
+import DataVisualizerPanel from "../../components/DataVisualizerPanel";
 
 const Mitochondria = () => {
 
@@ -54,6 +55,7 @@ const Mitochondria = () => {
       <LabAssistantPanel experiment={experiment} subject="biology" />
       <Quiz experimentId="mitochondria" subject="biology" />
       <div style={{ marginTop: "24px" }}>
+        <DataVisualizerPanel experimentId="mitochondria" />
         <ExperimentNotesPanel experimentId="mitochondria" />
       </div>
     </div>
@@ -61,4 +63,5 @@ const Mitochondria = () => {
 };
 
 export default Mitochondria;
+
 

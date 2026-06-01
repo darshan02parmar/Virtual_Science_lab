@@ -2,6 +2,7 @@ import chemistryData from "../../data/chemistry.json";
 import InstructionPanel from "../../components/InstructionPanel";
 import BackButton from "../../components/BackButton";
 import LabAssistantPanel from "../../components/LabAssistantPanel";
+import DataVisualizerPanel from "../../components/DataVisualizerPanel";
 
 const ChemistryEquipment = () => {
 
@@ -53,6 +54,7 @@ const ChemistryEquipment = () => {
       <LabAssistantPanel experiment={experiment} subject="chemistry" />
       <Quiz experimentId="chemistry-equipment" subject="chemistry" />
       <div style={{ marginTop: "24px" }}>
+        <DataVisualizerPanel experimentId="chemistry-equipment" />
         <ExperimentNotesPanel experimentId="chemistry-equipment" />
       </div>
     </div>
@@ -60,3 +62,4 @@ const ChemistryEquipment = () => {
 };
 
 export default ChemistryEquipment;
+

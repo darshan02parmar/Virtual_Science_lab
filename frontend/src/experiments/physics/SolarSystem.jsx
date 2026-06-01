@@ -65,6 +65,7 @@ const SolarSystem = () => {
       <Quiz experimentId="solar-system" subject="physics" />
 
       <div style={{ marginTop: "24px" }}>
+        <DataVisualizerPanel experimentId="solar-system" />
         <ExperimentNotesPanel experimentId="solar-system" />
       </div>
 
@@ -73,3 +74,4 @@ const SolarSystem = () => {
 };
 
 export default SolarSystem;
+

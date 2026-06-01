@@ -2,6 +2,7 @@ import physicsData from "../../data/physics.json";
 import InstructionPanel from "../../components/InstructionPanel";
 import BackButton from "../../components/BackButton";
 import LabAssistantPanel from "../../components/LabAssistantPanel";
+import DataVisualizerPanel from "../../components/DataVisualizerPanel";
 
 const ThumbRule = () => {
 
@@ -54,6 +55,7 @@ const ThumbRule = () => {
       <LabAssistantPanel experiment={experiment} subject="physics" />
       <Quiz experimentId="thumb-rule" subject="physics" />
       <div style={{ marginTop: "24px" }}>
+        <DataVisualizerPanel experimentId="thumb-rule" />
         <ExperimentNotesPanel experimentId="thumb-rule" />
       </div>
     </div>
@@ -61,3 +63,4 @@ const ThumbRule = () => {
 };
 
 export default ThumbRule;
+

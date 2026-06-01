@@ -125,6 +125,7 @@ const AcidBaseNeutralization = () => {
       </div>
 
       <div className="mt-8">
+        <DataVisualizerPanel experimentId="acid-base-neutralization" />
         <ExperimentNotesPanel experimentId="acid-base-neutralization" />
       </div>
 
@@ -134,3 +135,4 @@ const AcidBaseNeutralization = () => {
 };
 
 export default AcidBaseNeutralization;
+
