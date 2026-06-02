@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class QueryRequest(BaseModel):
@@ -14,10 +14,10 @@ class QueryResponse(BaseModel):
 class ExperimentNotesUpsertRequest(BaseModel):
     user_id: str
     experiment_id: str
-    observations: Optional[str] = None
-    conclusions: Optional[str] = None
-    learnings: Optional[str] = None
-    notes: Optional[str] = None
+    observations: Optional[str] = Field(default=None, max_length=10000)
+    conclusions: Optional[str] = Field(default=None, max_length=10000)
+    learnings: Optional[str] = Field(default=None, max_length=10000)
+    notes: Optional[str] = Field(default=None, max_length=10000)
 
 
 class ExperimentNotesResponse(BaseModel):
