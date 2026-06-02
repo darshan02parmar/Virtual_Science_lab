@@ -127,6 +127,7 @@ export default function AssistantChatWindow({
     <div
       role="dialog"
       aria-label="AI Lab Assistant"
+      className="lab-assistant-panel-open"
       style={{
         position: "fixed",
         bottom: "92px",

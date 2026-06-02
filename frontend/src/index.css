@@ -738,3 +738,80 @@ body[data-theme="high-contrast"] .rec-difficulty {
   color: #00ff00 !important;
   border: 2px solid #00ff00 !important;
 }
+
+/* ---------- MOBILE RESPONSIVENESS OVERHAUL ---------- */
+
+/* Table scrolling wrapper (for Data Visualizer) */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile Navbar rules */
+.mobile-menu-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+}
+.nav-links-container {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  /* Navbar */
+  .mobile-menu-btn {
+    display: block;
+  }
+  .nav-links-container {
+    display: none; /* Hidden by default on mobile */
+    flex-direction: column;
+    width: 100%;
+    align-items: stretch;
+    background: var(--card-bg, #ffffff);
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    margin-top: 12px;
+  }
+  .nav-links-container.open {
+    display: flex;
+  }
+  .nav-links-container > a {
+    color: var(--text-muted, #1e293b) !important; /* Ensure visibility on light/dark backgrounds */
+    border: 1px solid rgba(0,0,0,0.1) !important;
+    background: transparent !important;
+    text-align: center;
+  }
+  body[data-theme="dark"] .nav-links-container > a {
+    color: #e2e8f0 !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+  }
+  
+  /* Global Layout */
+  .home-hero h1 { font-size: 2rem; }
+  .tracker-dashboard { padding: 16px 0 24px; }
+  
+  /* Make 3D iframes scale down on mobile */
+  iframe {
+    width: 100% !important;
+    height: 350px !important;
+  }
+  
+  /* Lab Assistant Panel (Full Screen) */
+  .lab-assistant-panel-open {
+    width: 100% !important;
+    height: 100vh !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    border-radius: 0 !important;
+    max-height: none !important;
+  }
+}

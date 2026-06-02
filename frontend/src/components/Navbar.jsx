@@ -1,12 +1,15 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import { useGamification } from "../context/GamificationContext";
 import { useOnlineStatus } from "../context/OnlineStatusContext";
+import { Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const { xp } = useGamification();
   const { isOnline, pendingCount, isSyncing } = useOnlineStatus();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <nav
@@ -35,16 +38,17 @@ const Navbar = () => {
         </Link>
       </h2>
 
-      {/* Desktop Nav */}
-      <div
-        style={{
-          display: "flex",
-          gap: "16px",
-          alignItems: "center",
-          flexWrap: "wrap",
-          justifyContent: "center",
-        }}
+      {/* Mobile Menu Button */}
+      <button
+        className="mobile-menu-btn"
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        aria-label="Toggle navigation menu"
       >
+        {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+      </button>
+
+      {/* Desktop Nav / Mobile Dropdown */}
+      <div className={`nav-links-container ${isMobileMenuOpen ? "open" : ""}`}>
         <Link
           style={linkStyle}
           to="/biology"

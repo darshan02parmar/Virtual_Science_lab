@@ -142,10 +142,10 @@ export default function DataVisualizerPanel({ experimentId }) {
             </div>
 
             <div
+              className="table-responsive"
               style={{
                 border: "1px solid rgba(156,163,175,0.3)",
                 borderRadius: "8px",
-                overflow: "hidden",
               }}
             >
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
