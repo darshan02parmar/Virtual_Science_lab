@@ -20,16 +20,24 @@ router = APIRouter(prefix="/api/chatbot", tags=["Chatbot"])
 # ---------------------------------------------------------------------------
 
 class ChatRequest(BaseModel):
-    experimentTitle: str = Field(..., description="Title of the current experiment")
+    experimentTitle: str = Field(
+        ..., max_length=200, description="Title of the current experiment"
+    )
     experimentTheory: str = Field(
-        default="", description="Theory text of the experiment"
+        default="", max_length=5000, description="Theory text of the experiment"
     )
     experimentProcedure: str = Field(
-        default="", description="Procedure steps as a single string or list joined"
+        default="",
+        max_length=5000,
+        description="Procedure steps as a single string or list joined",
     )
-    userQuestion: str = Field(..., description="Student's question")
+    userQuestion: str = Field(
+        ..., max_length=2000, description="Student's question"
+    )
     subject: Optional[str] = Field(
-        default=None, description="Subject context: chemistry | physics | biology"
+        default=None,
+        max_length=50,
+        description="Subject context: chemistry | physics | biology",
     )
 
 
