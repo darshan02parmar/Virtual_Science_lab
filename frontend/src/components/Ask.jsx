@@ -6,7 +6,7 @@ export default function Ask() {
   const [answer, setAnswer] = useState("");
 
   const askBackend = async () => {
-    const res = await fetch(`${API_URL}/ask`, {
+    const res = await fetch(`${API_URL}/api/ask`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ question })

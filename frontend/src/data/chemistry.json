@@ -63,7 +63,7 @@
       ]
     },
     {
-      "id": "acid-base-neutralization",
+      "id": "titration-experiment",
       "title": "Acid-Base Titration",
       "description": "Simulation of an acid-base titration process",
       "difficulty": "Advanced",
@@ -80,6 +80,32 @@
       "precautions": [
         "Handle virtual acids and bases with care.",
         "Ensure accurate reading of the burette meniscus."
+      ]
+    },
+    {
+      "id": "acid-base-neutralization",
+      "title": "Acid-Base Neutralization",
+      "description": "Simulation of a neutralization reaction between hydrochloric acid and sodium hydroxide.",
+      "difficulty": "Advanced",
+      "modelUrl": "",
+      "aim": "To observe the neutralization reaction between hydrochloric acid (HCl) and sodium hydroxide (NaOH), resulting in the formation of salt and water.",
+      "theory": "A neutralization reaction occurs when an acid reacts with a base to produce salt and water. Hydrochloric acid (HCl) is a strong acid, while sodium hydroxide (NaOH) is a strong base. When mixed, hydrogen ions (H⁺) combine with hydroxide ions (OH⁻) to form water (H₂O), while sodium (Na⁺) and chloride (Cl⁻) ions form sodium chloride (NaCl). This reaction is exothermic, meaning it releases heat.",
+      "procedure": [
+        "Take a beaker containing dilute hydrochloric acid (HCl).",
+        "Add a few drops of phenolphthalein indicator.",
+        "Slowly add sodium hydroxide (NaOH) solution.",
+        "Stir the mixture gently.",
+        "Observe the color change and temperature change.",
+        "Continue until the solution reaches neutralization."
+      ],
+      "observation": "The indicator changes color during the reaction. The temperature increases slightly. A neutral solution is formed.",
+      "result": "Hydrochloric acid reacts with sodium hydroxide to form sodium chloride and water, confirming a successful neutralization reaction.",
+      "precautions": [
+        "Wear protective gloves and safety goggles.",
+        "Handle acid and base carefully.",
+        "Add solutions slowly to avoid splashing.",
+        "Stir gently during mixing.",
+        "Dispose of chemicals safely."
       ]
     }
   ]

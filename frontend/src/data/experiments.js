@@ -85,6 +85,17 @@ export const EXPERIMENT_CATALOG = [
     difficulty: "Advanced",
     concepts: ["Acids", "Bases", "Titration"],
     prerequisites: ["volcano-experiment"],
+    nextTopics: ["titration-experiment"]
+  },
+  {
+    id: "titration-experiment",
+    title: "Acid-Base Titration",
+    description: "Simulation of an acid-base titration process",
+    subject: "chemistry",
+    link: "/chemistry/titration-experiment",
+    difficulty: "Advanced",
+    concepts: ["Acids", "Bases", "Titration"],
+    prerequisites: ["acid-base-neutralization"],
     nextTopics: []
   },
   {
@@ -129,6 +140,17 @@ export const EXPERIMENT_CATALOG = [
     difficulty: "Advanced",
     concepts: ["Magnetic Flux", "Currents"],
     prerequisites: ["magnetic-field-wires"],
+    nextTopics: []
+  },
+  {
+    id: "solar-system",
+    title: "Solar System",
+    description: "Explore planets and the structure of the solar system in 3D",
+    subject: "physics",
+    link: "/physics/solar-system",
+    difficulty: "Beginner",
+    concepts: ["Astronomy", "Gravity"],
+    prerequisites: [],
     nextTopics: []
   },
 ];

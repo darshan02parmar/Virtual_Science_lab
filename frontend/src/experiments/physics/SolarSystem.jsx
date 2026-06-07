@@ -3,6 +3,7 @@ import InstructionPanel from "../../components/InstructionPanel";
 import BackButton from "../../components/BackButton";
 import Quiz from "../../components/Quiz";
 import ExperimentNotesPanel from "../../components/ExperimentNotesPanel";
+import DataVisualizerPanel from "../../components/DataVisualizerPanel";
 
 const SolarSystem = () => {
 

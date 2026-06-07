@@ -201,23 +201,6 @@ const Navbar = () => {
             background: "rgba(255,255,255,0.12)",
             border: "1px solid rgba(255,255,255,0.2)",
           }}
-          to="/notebook"
-          onMouseOver={(e) =>
-            (e.currentTarget.style.background = "rgba(255,255,255,0.22)")
-          }
-          onMouseOut={(e) =>
-            (e.currentTarget.style.background = "rgba(255,255,255,0.12)")
-          }
-        >
-          Notebook
-        </Link>
-
-        <Link
-          style={{
-            ...linkStyle,
-            background: "rgba(255,255,255,0.12)",
-            border: "1px solid rgba(255,255,255,0.2)",
-          }}
           to="/collaborate"
           onMouseOver={(e) =>
             (e.currentTarget.style.background = "rgba(255,255,255,0.22)")
@@ -244,14 +227,6 @@ const Navbar = () => {
           }
         >
           Careers
-        </Link>
-        <Link
-          style={{ ...linkStyle, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.2)" }}
-          to="/notebook"
-          onMouseOver={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.22)")}
-          onMouseOut={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.12)")}
-        >
-          <span>🤝</span> Collaborate
         </Link>
 
         <Link
