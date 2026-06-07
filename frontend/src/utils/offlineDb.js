@@ -271,7 +271,7 @@ export const offlineDb = {
     });
   },
 
-  // --- SYNC OUTBOX QUEUE ---
+  // --- SYNC OUTBOX QUEUE (Refactored for Issue #122) ---
   async getSyncQueue() {
     const store = await getStore("sync_queue", "readonly");
     return new Promise((resolve) => {
@@ -283,9 +283,17 @@ export const offlineDb = {
 
   async queueAction(type, payload) {
     const store = await getStore("sync_queue", "readwrite");
+    
+    // 📌 Deterministic Idempotency Key: Cryptographically secure UUID
+    const actionId = crypto.randomUUID();
+    
+    // 📌 OCC State Tracker: Extract version identifier from payload or default to structural 1
+    const currentVersion = payload.__v || payload.version || 1;
+
     const action = {
-      id: `${type}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: actionId,
       type,
+      version: currentVersion,
       payload,
       timestamp: new Date().toISOString()
     };
@@ -301,6 +309,8 @@ export const offlineDb = {
           ...existingNoteAction.payload,
           ...payload
         };
+        // Ensure atomic version tracking cascades across local merges
+        existingNoteAction.version = payload.__v || payload.version || existingNoteAction.version || 1;
         existingNoteAction.timestamp = action.timestamp;
         return new Promise((resolve) => {
           const req = store.put(existingNoteAction);
@@ -321,6 +331,7 @@ export const offlineDb = {
           ...existingAction.payload,
           ...payload
         };
+        existingAction.version = payload.__v || payload.version || existingAction.version || 1;
         existingAction.timestamp = action.timestamp;
         return new Promise((resolve) => {
           const req = store.put(existingAction);

@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, memo } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
-import { useGamification } from "../context/GamificationContext";
+import { useGamificationMeta } from "../context/GamificationContext";
 import quizData from "../data/quizzes.json";
 import { offlineDb } from "../utils/offlineDb";
 import API_URL from "../config";
@@ -29,7 +29,8 @@ const getScoreTone = (score, total) => {
 };
 
 const Quiz = ({ experimentId, subject }) => {
-  const { submitQuiz, completedQuizzes, quizAttempts } = useGamification();
+  // ⚡ Critical Optimization: Use low-frequency Meta context to completely bypass high-frequency XP state updates
+  const { submitQuiz, completedQuizzes, quizAttempts } = useGamificationMeta();
   const questions = quizData.quizzes[experimentId] || [];
 
   const [quizStarted, setQuizStarted] = useState(false);
@@ -88,16 +89,14 @@ const Quiz = ({ experimentId, subject }) => {
   const handleSubmitScore = async () => {
     setSubmitting(true);
 
-    // 1. Prepare the history record
     const historyRecord = {
-      user_id: "default-student", // Ensure this matches your auth user
-      experiment_name: experimentId, // Or a more descriptive title if available
+      user_id: "default-student", 
+      experiment_name: experimentId, 
       subject: subject,
       score: correctAnswers,
       timestamp: new Date().toISOString()
     };
 
-    // 2. Perform submission to gamification context
     const result = await submitQuiz(
       experimentId,
       correctAnswers,
@@ -106,13 +105,9 @@ const Quiz = ({ experimentId, subject }) => {
       questions.length
     );
 
-    // 3. Save to local IndexedDB
     await offlineDb.saveExperimentHistory(historyRecord);
-
-    // 4. Queue for background sync if online/offline
     await offlineDb.queueAction("experiment_history", historyRecord);
 
-    // 5. Attempt immediate API call if online
     if (navigator.onLine) {
       try {
         await fetch(`${BASE_URL}/api/progress/history`, {
@@ -380,4 +375,5 @@ const Quiz = ({ experimentId, subject }) => {
   );
 };
 
-export default Quiz;
+// Component Layout Lifecycle Guarding: Prevent parent re-renders from trickling down
+export default memo(Quiz);

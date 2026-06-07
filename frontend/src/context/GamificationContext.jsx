@@ -1,12 +1,16 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState, useMemo, useRef } from "react";
 import API_URL from "../config";
 import { useOnlineStatus } from "./OnlineStatusContext";
 import { offlineDb } from "../utils/offlineDb";
 
-const GamificationContext = createContext();
+// Partitioned contexts to completely isolate high-frequency and low-frequency updates
+const GamificationMetaContext = createContext();
+const GamificationTelemetryContext = createContext();
+
 const USER_ID = "default-student";
 const STORAGE_KEY = "vsl-quiz-performance";
+const DEBOUNCE_DELAY_MS = 1000;
 
 const BASE_URL = 
   typeof window !== "undefined" && 
@@ -45,14 +49,48 @@ const BADGE_DEFINITIONS = [
 ];
 
 export const GamificationProvider = ({ children }) => {
+  // Telemetry States (High-Frequency updates)
   const [xp, setXp] = useState(0);
+  const [achievement, setAchievement] = useState(null);
+
+  // Metadata States (Low-Frequency updates)
   const [completedQuizzes, setCompletedQuizzes] = useState({});
   const [quizAttempts, setQuizAttempts] = useState([]);
   const [unlockedBadges, setUnlockedBadges] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [achievement, setAchievement] = useState(null);
 
   const { isOnline } = useOnlineStatus();
+  const debounceTimerRef = useRef(null);
+
+  // ⚡ Debounced Persistence Bridge to optimize disk space overhead
+  const scheduleDebouncedPersistence = useCallback((updatedXp, updatedQuizzes, updatedBadges) => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    debounceTimerRef.current = setTimeout(async () => {
+      const statsPayload = {
+        user_id: USER_ID,
+        xp: updatedXp,
+        completed_quizzes: updatedQuizzes,
+        unlocked_badges: updatedBadges
+      };
+      
+      try {
+        cacheStats(statsPayload);
+        await offlineDb.saveGamificationStatus(statsPayload);
+      } catch (error) {
+        console.error("Debounced persistence pipeline failure:", error);
+      }
+    }, DEBOUNCE_DELAY_MS);
+  }, []);
+
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    };
+  }, []);
 
   const fetchStatus = useCallback(async () => {
     try {
@@ -68,6 +106,7 @@ export const GamificationProvider = ({ children }) => {
         setCompletedQuizzes(data.completed_quizzes);
         setQuizAttempts(data.quiz_attempts || []);
         setUnlockedBadges(data.unlocked_badges);
+        
         cacheStats(data);
         offlineDb.saveGamificationStatus({
           user_id: USER_ID,
@@ -80,7 +119,6 @@ export const GamificationProvider = ({ children }) => {
     } catch (err) {
       console.log("Loading offline gamification status:", err.message);
       
-      // Attempt to load from IndexedDB
       const dbStats = await offlineDb.getGamificationStatus(USER_ID);
       const dbAttempts = await offlineDb.getQuizAttempts();
       
@@ -105,7 +143,7 @@ export const GamificationProvider = ({ children }) => {
     fetchStatus();
   }, [fetchStatus]);
 
-  const submitQuiz = async (experimentId, score, subject, selectedAnswers = [], totalQuestions = 5) => {
+  const submitQuiz = useCallback(async (experimentId, score, subject, selectedAnswers = [], totalQuestions = 5) => {
     const attemptedAt = new Date().toISOString();
     const mockAttemptId = `attempt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const attempt = {
@@ -120,7 +158,6 @@ export const GamificationProvider = ({ children }) => {
       attempted_at: attemptedAt
     };
 
-    // Prepare offline queue action parameters
     const syncPayload = {
       user_id: USER_ID,
       experiment_id: experimentId,
@@ -131,9 +168,7 @@ export const GamificationProvider = ({ children }) => {
       attempted_at: attemptedAt
     };
 
-    // Save locally to IndexedDB & React State immediately (Offline support)
     const handleLocalFallback = async () => {
-      console.log("Saving quiz attempt locally (offline mode fallback)");
       await offlineDb.saveQuizAttempt(attempt);
       
       const currentStats = (await offlineDb.getGamificationStatus(USER_ID)) || {
@@ -179,40 +214,20 @@ export const GamificationProvider = ({ children }) => {
         }
       }
 
-      const nextStats = {
-        user_id: USER_ID,
-        xp: updatedXp,
-        completed_quizzes: localCompleted,
-        unlocked_badges: localBadges
-      };
-
-      // Set Achievement for immediate premium local feedback
       if (xpEarned > 0 || newBadges.length > 0) {
-        setAchievement({
-          xpEarned,
-          newBadges,
-          experimentId
-        });
+        setAchievement({ xpEarned, newBadges, experimentId });
       }
 
-      // Sync state and IndexedDB stats
       setXp(updatedXp);
       setCompletedQuizzes(localCompleted);
       setUnlockedBadges(localBadges);
       setQuizAttempts(prev => [attempt, ...prev]);
 
-      cacheStats(nextStats);
-      await offlineDb.saveGamificationStatus(nextStats);
+      scheduleDebouncedPersistence(updatedXp, localCompleted, localBadges);
 
-      return {
-        xpEarned,
-        newBadges,
-        totalXp: updatedXp,
-        attempt
-      };
+      return { xpEarned, newBadges, totalXp: updatedXp, attempt };
     };
 
-    // Queue action for syncing
     const actionId = await offlineDb.queueAction("quiz", syncPayload);
 
     try {
@@ -226,17 +241,15 @@ export const GamificationProvider = ({ children }) => {
       });
 
       if (!res.ok) {
-        throw new Error(`Server returned error: ${res.status}`);
+        throw new Error(`Server error: ${res.status}`);
       }
 
       const data = await res.json();
       
-      // Dequeue if successfully synced directly
       if (actionId) {
         await offlineDb.dequeueAction(actionId);
       }
 
-      // If the user earned XP or unlocked a badge, trigger a celebration popup
       if (data.xp_earned > 0 || data.new_badges.length > 0) {
         setAchievement({
           xpEarned: data.xp_earned,
@@ -245,20 +258,12 @@ export const GamificationProvider = ({ children }) => {
         });
       }
 
-      // Sync local React state
       setXp(data.total_xp);
       setCompletedQuizzes(data.completed_quizzes);
       setQuizAttempts(data.quiz_attempts || []);
       setUnlockedBadges(data.unlocked_badges);
       
-      const statsPayload = {
-        user_id: USER_ID,
-        xp: data.total_xp,
-        completed_quizzes: data.completed_quizzes,
-        unlocked_badges: data.unlocked_badges
-      };
-      cacheStats(statsPayload);
-      await offlineDb.saveGamificationStatus(statsPayload);
+      scheduleDebouncedPersistence(data.total_xp, data.completed_quizzes, data.unlocked_badges);
       await offlineDb.saveAllQuizAttempts(data.quiz_attempts || []);
 
       return {
@@ -268,49 +273,67 @@ export const GamificationProvider = ({ children }) => {
         attempt: data.attempt
       };
     } catch (err) {
-      console.log("Offline or server error during quiz submit. Running local simulation:", err.message);
+      console.log("Fallback execution triggered:", err.message);
       return await handleLocalFallback();
     }
-  };
+  }, [isOnline, xp, completedQuizzes, unlockedBadges, scheduleDebouncedPersistence]);
 
-  const clearAchievement = () => {
-    setAchievement(null);
-  };
+  const clearAchievement = useCallback(() => {
+  setAchievement(null);
+}, []);  
+
+  // Memoized dependency context objects to prevent reference thrashing
+  const telemetryContextValue = useMemo(() => ({
+    xp,
+    achievement,
+    clearAchievement
+  }), [xp, achievement, clearAchievement]);
+
+  const metaContextValue = useMemo(() => ({
+    completedQuizzes,
+    quizAttempts,
+    unlockedBadges,
+    loading,
+    submitQuiz,
+    refreshStats: fetchStatus
+  }), [completedQuizzes, quizAttempts, unlockedBadges, loading, submitQuiz, fetchStatus]);
 
   return (
-    <GamificationContext.Provider
-      value={{
-        xp,
-        completedQuizzes,
-        quizAttempts,
-        unlockedBadges,
-        loading,
-        achievement,
-        submitQuiz,
-        clearAchievement,
-        refreshStats: fetchStatus
-      }}
-    >
-      {children}
-    </GamificationContext.Provider>
+    <GamificationMetaContext.Provider value={metaContextValue}>
+      <GamificationTelemetryContext.Provider value={telemetryContextValue}>
+        {children}
+      </GamificationTelemetryContext.Provider>
+    </GamificationMetaContext.Provider>
   );
 };
 
+// High-frequency tracker consumer hook
+export const useGamificationTelemetry = () => {
+  const context = useContext(GamificationTelemetryContext);
+  if (!context) throw new Error("Context missing: useGamificationTelemetry must be used inside a GamificationProvider.");
+  return context;
+};
+
+// Structural configuration metadata consumer hook
+export const useGamificationMeta = () => {
+  const context = useContext(GamificationMetaContext);
+  if (!context) throw new Error("Context missing: useGamificationMeta must be used inside a GamificationProvider.");
+  return context;
+};
+
+// Backward-compatible hook combining both contexts
 export const useGamification = () => {
-  const context = useContext(GamificationContext);
-  if (context === undefined) {
-    console.warn("useGamification was called outside a GamificationProvider. Returning safe offline fallback.");
+  const meta = useContext(GamificationMetaContext);
+  const telemetry = useContext(GamificationTelemetryContext);
+  
+  if (!meta || !telemetry) {
+    console.warn("Returning default metrics fallback.");
     return {
-      xp: 0,
-      completedQuizzes: {},
-      quizAttempts: [],
-      unlockedBadges: [],
-      loading: false,
-      achievement: null,
-      submitQuiz: async () => null,
-      clearAchievement: () => {},
-      refreshStats: async () => {}
+      xp: 0, completedQuizzes: {}, quizAttempts: [], unlockedBadges: [],
+      loading: false, achievement: null, submitQuiz: async () => null,
+      clearAchievement: () => {}, refreshStats: async () => {}
     };
   }
-  return context;
+  
+  return { ...meta, ...telemetry };
 };
