@@ -20,6 +20,7 @@ import TeamSessionLobby from "./pages/TeamSessionLobby";
 import NotebookDashboard from "./pages/NotebookDashboard";
 import NotebookEditor from "./pages/NotebookEditor";
 import CareerExplorer from "./pages/CareerExplorer";
+import Login from "./pages/Login";
 
 const AppRouter = () => {
   return (
@@ -40,7 +41,7 @@ const AppRouter = () => {
         {/* User Pages */}
         <Route path="/profile" element={<Profile />} />
         <Route path="/progress" element={<ProgressDashboard />} />
-        <Route path="/explore" element={<KnowledgeGraph />} />
+        {/* <Route path="/explore" element={<KnowledgeGraph />} /> */}
         <Route path="/reports" element={<ReportHistory />} />
         <Route path="/my-progress" element={<MyProgress />} />
         <Route path="/notebook" element={<NotebookDashboard />} />
@@ -48,6 +49,7 @@ const AppRouter = () => {
         <Route path="/collaborate" element={<TeamSessionLobby />} />
         <Route path="/leaderboard" element={<LeaderboardDashboard />} />
         <Route path="/careers" element={<CareerExplorer />} />
+         <Route path="/login" element={<Login />} />
       </Routes>
     </>
   );
