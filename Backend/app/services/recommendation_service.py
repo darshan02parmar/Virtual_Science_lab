@@ -10,10 +10,12 @@ EXPERIMENT_CATALOG = [
     {"id": "volcano-experiment", "subject": "chemistry", "difficulty": "Beginner", "title": "Volcano Experiment"},
     {"id": "condenser", "subject": "chemistry", "difficulty": "Intermediate", "title": "Condenser"},
     {"id": "acid-base-neutralization", "subject": "chemistry", "difficulty": "Advanced", "title": "Acid Base Neutralization"},
+    {"id": "titration-experiment", "subject": "chemistry", "difficulty": "Advanced", "title": "Acid-Base Titration"},
     {"id": "velocity-acceleration", "subject": "physics", "difficulty": "Beginner", "title": "Velocity & Acceleration"},
     {"id": "magnetic-field-wires", "subject": "physics", "difficulty": "Intermediate", "title": "Magnetic Field (Two Wires)"},
     {"id": "thumb-rule", "subject": "physics", "difficulty": "Beginner", "title": "Right-Hand Thumb Rule"},
     {"id": "magnetic-field-direction", "subject": "physics", "difficulty": "Advanced", "title": "Magnetic Field Direction"},
+    {"id": "solar-system", "subject": "physics", "difficulty": "Beginner", "title": "Solar System"},
 ]
 
 def get_recommendations(user_id: str) -> List[Dict]:

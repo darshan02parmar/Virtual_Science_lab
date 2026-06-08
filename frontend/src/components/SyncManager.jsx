@@ -60,6 +60,13 @@ const SyncManager = () => {
     setIsSyncing(true);
     showToast("info", "Syncing offline progress...", 0); // Keep open during sync
 
+    // Local metrics counters to update toast feedback reactively
+    let notes_synced = 0;
+    let progress_synced = 0;
+    let quizzes_synced = 0;
+    let history_synced = 0;
+    let failed_actions = 0;
+
     try {
       const queue = await offlineDb.getSyncQueue();
       if (queue.length === 0) {
@@ -69,24 +76,50 @@ const SyncManager = () => {
         return;
       }
 
-      const response = await fetch(`${BASE_URL}/api/sync`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ actions: queue })
-      });
-
-      if (!response.ok) {
-        throw new Error(`Sync API returned status ${response.status}`);
-      }
-
-      const result = await response.json();
-      
-      // Dequeue all actions successfully synced
+      // 📌 AC3: Fault-Tolerant Outbox Isolation (Process sequentially to handle individual status results)
       for (const action of queue) {
-        await offlineDb.dequeueAction(action.id);
+        try {
+          const response = await fetch(`${BASE_URL}/api/sync`, {
+            method: "POST",
+            headers: { 
+              "Content-Type": "application/json",
+              // 📌 AC2: Pass cryptographic UUID as an Idempotency tracking header
+              "X-Idempotency-Key": action.id 
+            },
+            body: JSON.stringify({
+              action: action.type,
+              version: action.version,
+              data: action.payload
+            })
+          });
+
+          // HTTP 200 (Processed) or HTTP 200 Cached updates mean it's safe to clear
+          if (response.ok || response.status === 200) {
+            // Remove exactly this confirmed event from the local IndexedDB queue
+            await offlineDb.dequeueAction(action.id);
+
+            // Populate localized state counters based on outbox mapping type
+            if (action.type === "notes" || action.type === "notebook") notes_synced++;
+            else if (action.type === "progress") progress_synced++;
+            else if (action.type === "quiz_attempts") quizzes_synced++;
+            else if (action.type === "experiment_history") history_synced++;
+          } else if (response.status === 409) {
+            // OCC Version State Conflict (Stale local overwrite rejected by backend)
+            console.warn(`[Sync Conflict] Action ${action.id} rejected due to stale version.`);
+            failed_actions++;
+            // Note: We keep it in the queue for evaluation or safety review isolation
+          } else {
+            console.error(`[Sync Integrity Error] Action ${action.id} failed with status ${response.status}`);
+            failed_actions++;
+          }
+        } catch (itemErr) {
+          // Network fluctuation during this specific iteration packet isolation
+          console.error(`[Sync Network Timeout] Isolated failure for action ${action.id}:`, itemErr);
+          failed_actions++;
+        }
       }
 
-      // Update pending count instantly
+      // Update pending count instantly after loop completion
       const updatedQueue = await offlineDb.getSyncQueue();
       setPendingCount(updatedQueue.length);
 
@@ -94,24 +127,20 @@ const SyncManager = () => {
       if (refreshProgress) await refreshProgress();
       if (refreshStats) await refreshStats();
 
-      const totalSynced = 
-        (result.notes_synced || 0) + 
-        (result.progress_synced || 0) + 
-        (result.quizzes_synced || 0) + 
-        (result.history_synced || 0);
+      const totalSynced = notes_synced + progress_synced + quizzes_synced + history_synced;
       
-      if (result.failed_actions > 0) {
+      if (failed_actions > 0) {
         showToast(
           "error",
-          `Synced ${totalSynced} items. ${result.failed_actions} items failed.`,
+          `Synced ${totalSynced} items. ${failed_actions} items remained in queue due to issues.`,
           5000
         );
       } else {
         showToast("success", `Sync complete! Uploaded ${totalSynced} items.`, 4000);
       }
     } catch (err) {
-      console.error("Background sync failed:", err);
-      showToast("error", "Sync failed. Will retry when connection stabilizes.", 5000);
+      console.error("Background sync processing engine failed:", err);
+      showToast("error", "Sync execution crashed. Will retry when connection stabilizes.", 5000);
     } finally {
       setIsSyncing(false);
       syncLockRef.current = false;

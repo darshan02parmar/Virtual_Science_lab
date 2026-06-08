@@ -21,6 +21,8 @@ import NotebookDashboard from "./pages/NotebookDashboard";
 import NotebookEditor from "./pages/NotebookEditor";
 import CareerExplorer from "./pages/CareerExplorer";
 import Login from "./pages/Login";
+import FAQ from "./pages/FAQ";
+import Policy from "./pages/Policy";
 
 const AppRouter = () => {
   return (
@@ -50,6 +52,8 @@ const AppRouter = () => {
         <Route path="/leaderboard" element={<LeaderboardDashboard />} />
         <Route path="/careers" element={<CareerExplorer />} />
          <Route path="/login" element={<Login />} />
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/policy" element={<Policy />} />
       </Routes>
     </>
   );

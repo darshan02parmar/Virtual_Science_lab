@@ -44,8 +44,14 @@ def _serialize(doc) -> Dict[str, Any]:
 
 def get_user_experiment_notes(user_id: str, experiment_id: str) -> Optional[Dict[str, Any]]:
     db = _get_db()
+    
+    # Defense-in-Depth: Explicitly cast query parameters to primitive string
+    # Bypasses any runtime attempt to inject query operator dict structures
+    safe_user_id = str(user_id)
+    safe_experiment_id = str(experiment_id)
+    
     doc = db["experiment_notes"].find_one(
-        {"user_id": user_id, "experiment_id": experiment_id}
+        {"user_id": safe_user_id, "experiment_id": safe_experiment_id}
     )
     if not doc:
         return None
@@ -62,25 +68,30 @@ def upsert_user_experiment_notes(
     db = _get_db()
     now = datetime.now(timezone.utc).isoformat()
 
+    # Query Layer Guarding: Force strict primitive isolation
+    safe_user_id = str(user_id)
+    safe_experiment_id = str(experiment_id)
+
     existing = db["experiment_notes"].find_one(
-        {"user_id": user_id, "experiment_id": experiment_id}
+        {"user_id": safe_user_id, "experiment_id": safe_experiment_id}
     )
     created_at = existing["created_at"] if existing else now
 
+    # Payload Sanitization Bridge: Strict casting of string content fields
     db["experiment_notes"].update_one(
-        {"user_id": user_id, "experiment_id": experiment_id},
+        {"user_id": safe_user_id, "experiment_id": safe_experiment_id},
         {
             "$set": {
-                "user_id":       user_id,
-                "experiment_id": experiment_id,
-                "observations":  observations,
-                "conclusions":   conclusions,
-                "learnings":     learnings,
-                "notes":         notes,
+                "user_id":       safe_user_id,
+                "experiment_id": safe_experiment_id,
+                "observations":  str(observations) if observations is not None else None,
+                "conclusions":   str(conclusions) if conclusions is not None else None,
+                "learnings":     str(learnings) if learnings is not None else None,
+                "notes":         str(notes) if notes is not None else None,
                 "created_at":    created_at,
                 "updated_at":    now,
             }
         },
         upsert=True,
     )
-    return get_user_experiment_notes(user_id, experiment_id)
+    return get_user_experiment_notes(safe_user_id, safe_experiment_id)

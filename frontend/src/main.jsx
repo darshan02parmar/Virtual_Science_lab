@@ -10,6 +10,7 @@ import { NotesProvider } from "./context/NotesContext";
 import { NotebookProvider } from "./context/NotebookContext";
 import { PredictionProvider } from "./context/PredictionContext";
 import { CollaborationProvider } from "./context/CollaborationContext";
+import { ReportsProvider } from "./context/ReportsContext";
 import "./styles/globals.css";
 import "./index.css";
 import enableSparkleCursor from "./components/SparkleCursor";

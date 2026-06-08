@@ -12,7 +12,10 @@ DEBUG = os.getenv("DEBUG", "false").lower() == "true"
 MONGODB_URI = os.getenv("MONGODB_URI", "")
 
 if not MONGODB_URI:
-    raise RuntimeError(
-        "MONGODB_URI environment variable is not set. "
-        "Add it in Vercel → Settings → Environment Variables."
+    import sys
+    MONGODB_URI = "mongodb://localhost:27017/virtual_science_lab"
+    print(
+        "WARNING: MONGODB_URI environment variable is not set. "
+        "Falling back to local development database: mongodb://localhost:27017/virtual_science_lab",
+        file=sys.stderr
     )

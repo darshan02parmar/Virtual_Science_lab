@@ -59,6 +59,13 @@ EXPERIMENT_CATALOG = [
     "prerequisites": ["volcano-experiment"],
   },
   {
+    "id": "titration-experiment",
+    "title": "Acid-Base Titration",
+    "subject": "chemistry",
+    "difficulty": "Advanced",
+    "prerequisites": ["acid-base-neutralization"],
+  },
+  {
     "id": "velocity-acceleration",
     "title": "Velocity & Acceleration",
     "subject": "physics",
@@ -85,6 +92,13 @@ EXPERIMENT_CATALOG = [
     "subject": "physics",
     "difficulty": "Advanced",
     "prerequisites": ["magnetic-field-wires"],
+  },
+  {
+    "id": "solar-system",
+    "title": "Solar System",
+    "subject": "physics",
+    "difficulty": "Beginner",
+    "prerequisites": [],
   }
 ]
 

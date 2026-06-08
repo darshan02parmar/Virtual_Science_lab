@@ -1,34 +1,44 @@
-from typing import List, Dict, Any
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Header, HTTPException, status
 from pydantic import BaseModel, Field
-from app.services.sync_service import sync_offline_actions
+from typing import Dict, Any, Optional
+from app.services.sync_service import process_single_sync_action
 
 router = APIRouter(prefix="/api/sync", tags=["sync"])
 
 class SyncActionRequest(BaseModel):
-    id: str = Field(..., description="Unique action ID generated on client")
-    type: str = Field(..., description="Action type: notes, progress, or quiz")
-    payload: Dict[str, Any] = Field(..., description="Payload payload contents")
-    timestamp: str = Field(..., description="ISO 8601 UTC timestamp of action")
+    action: str = Field(..., description="Action type: notes, progress, quiz")
+    version: int = Field(..., description="Local version track number")
+    data: Dict[str, Any] = Field(..., description="Actual data payload attributes")
 
-class SyncBatchRequest(BaseModel):
-    actions: List[SyncActionRequest]
-
-class SyncResponse(BaseModel):
-    notes_synced: int
-    progress_synced: int
-    quizzes_synced: int
-    failed_actions: int
-    errors: List[str]
-
-@router.post("", response_model=SyncResponse)
-def sync_data(payload: SyncBatchRequest):
+@router.post("")
+def sync_data(
+    request: SyncActionRequest,
+    x_idempotency_key: Optional[str] = Header(None)
+):
     """
-    Synchronize a batch of client actions captured while offline.
-    Applies timestamp-based LWW logic and chronological attempt execution.
+    Endpoint mapping client side single requests to isolated processing contexts.
     """
-    try:
-        actions_dict = [act.dict() for act in payload.actions]
-        return sync_offline_actions(actions_dict)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Synchronization failed: {str(e)}")
+    if not x_idempotency_key:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Missing required validation header: 'X-Idempotency-Key'"
+        )
+
+    result = process_single_sync_action(
+        idempotency_key=x_idempotency_key,
+        action_type=request.action,
+        version=request.version,
+        payload=request.data
+    )
+
+    if result["status"] == "conflict":
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=result["detail"])
+    elif result["status"] == "error":
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=result["detail"])
+
+    return {
+        "notes_synced": 1 if result["action_applied"] == "notes" else 0,
+        "progress_synced": 1 if result["action_applied"] == "progress" else 0,
+        "quizzes_synced": 1 if result["action_applied"] == "quiz" else 0,
+        "failed_actions": 0
+    }

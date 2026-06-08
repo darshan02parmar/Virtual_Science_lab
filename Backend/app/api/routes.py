@@ -16,18 +16,27 @@ def get_biology_experiments():
         "experiments": [
             {
                 "id": 1,
-                "title": "Human Heart Anatomy",
-                "description": "Study chambers, valves, and blood flow in the human heart"
+                "title": "Human Body Anatomy",
+                "description": "Explore full human body systems in 3D",
+                "slug": "human-body"
             },
             {
                 "id": 2,
-                "title": "Plant Cell Structure",
-                "description": "Explore nucleus, chloroplast, and cell wall in 3D"
+                "title": "Mitochondria",
+                "description": "Study the powerhouse of the cell",
+                "slug": "mitochondria"
             },
             {
                 "id": 3,
-                "title": "Respiratory System",
-                "description": "Understand lungs, trachea, and breathing mechanism"
+                "title": "Eye Anatomy",
+                "description": "Understand structure and function of the eye",
+                "slug": "eye"
+            },
+            {
+                "id": 4,
+                "title": "Kidney Anatomy",
+                "description": "Learn how kidneys filter blood",
+                "slug": "kidney"
             }
         ]
     }

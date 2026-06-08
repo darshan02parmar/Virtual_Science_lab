@@ -1,5 +1,6 @@
 import React from "react";
 import ExperimentNotesPanel from "../../components/ExperimentNotesPanel";
+import DataVisualizerPanel from "../../components/DataVisualizerPanel";
 import Quiz from "../../components/Quiz";
 
 const AcidBaseNeutralization = () => {

@@ -107,6 +107,36 @@ const Footer = () => {
                         >
                             Physics
                         </Link>
+
+                        <Link
+                            to="/faq"
+                            style={footerLink}
+                            onMouseOver={(e) => {
+                                e.target.style.opacity = "0.8";
+                                e.target.style.transform = "translateX(4px)";
+                            }}
+                            onMouseOut={(e) => {
+                                e.target.style.opacity = "1";
+                                e.target.style.transform = "translateX(0)";
+                            }}
+                        >
+                            FAQ
+                        </Link>
+
+                        <Link
+                            to="/policy"
+                            style={footerLink}
+                            onMouseOver={(e) => {
+                                e.target.style.opacity = "0.8";
+                                e.target.style.transform = "translateX(4px)";
+                            }}
+                            onMouseOut={(e) => {
+                                e.target.style.opacity = "1";
+                                e.target.style.transform = "translateX(0)";
+                            }}
+                        >
+                            Privacy Policy
+                        </Link>
                     </div>
                 </div>
 
