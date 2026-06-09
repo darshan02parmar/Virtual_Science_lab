@@ -20,6 +20,7 @@ import TeamSessionLobby from "./pages/TeamSessionLobby";
 import NotebookDashboard from "./pages/NotebookDashboard";
 import NotebookEditor from "./pages/NotebookEditor";
 import CareerExplorer from "./pages/CareerExplorer";
+import Login from "./pages/Login";
 import FAQ from "./pages/FAQ";
 import Policy from "./pages/Policy";
 
@@ -42,7 +43,7 @@ const AppRouter = () => {
         {/* User Pages */}
         <Route path="/profile" element={<Profile />} />
         <Route path="/progress" element={<ProgressDashboard />} />
-        <Route path="/explore" element={<KnowledgeGraph />} />
+        {/* <Route path="/explore" element={<KnowledgeGraph />} /> */}
         <Route path="/reports" element={<ReportHistory />} />
         <Route path="/my-progress" element={<MyProgress />} />
         <Route path="/notebook" element={<NotebookDashboard />} />
@@ -50,6 +51,7 @@ const AppRouter = () => {
         <Route path="/collaborate" element={<TeamSessionLobby />} />
         <Route path="/leaderboard" element={<LeaderboardDashboard />} />
         <Route path="/careers" element={<CareerExplorer />} />
+         <Route path="/login" element={<Login />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/policy" element={<Policy />} />
       </Routes>
