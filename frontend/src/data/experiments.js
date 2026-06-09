@@ -153,6 +153,19 @@ export const EXPERIMENT_CATALOG = [
     prerequisites: [],
     nextTopics: []
   },
+  {
+  id: "geometry-shapes",
+  subject: "mathematics",
+  title: "Geometry Shapes",
+  description: "Visualize geometric figures interactively with dynamic diagrams."
+},
+{
+  id: "probability-simulator",
+  subject: "mathematics",
+  title: "Probability Simulator",
+  description: "Experiment with randomness and probability distributions."
+}
+
 ];
 
-export const SUBJECTS = ["biology", "chemistry", "physics"];
+export const SUBJECTS = ["biology", "chemistry", "physics", "mathematics"];
